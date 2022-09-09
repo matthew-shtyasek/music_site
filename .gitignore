@@ -1,0 +1,7 @@
+# folders
+venv/
+fixtures/
+.idea/
+
+# files
+*.sqlite3
