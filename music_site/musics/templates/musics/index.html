@@ -1,6 +1,17 @@
 {% extends 'root.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/player.css' %}">
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/player.js' %}"></script>
+{% endblock %}
 
 {% block content %}
-    {% for music in musics %}
+    {% for song in songs %}
+        <p>{{ song.name }} (<a href="#">{{ song.artist.name }}</a>)</p>
+        <audio src="{{ song.track.url }}" controls></audio>
     {% endfor %}
 {% endblock %}

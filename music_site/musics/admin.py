@@ -12,7 +12,7 @@ class MusicianAdmin(admin.ModelAdmin):
               'description',
               'date_of_birth',
               'date_of_death')
-    list_display = ('full_name',
+    list_display = ('name',
                     'slug',
                     'date_of_birth',
                     'date_of_death')

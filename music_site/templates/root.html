@@ -12,10 +12,13 @@
 
     {% block css %}
     {% endblock %}
+
+    {% block js %}
+    {% endblock %}
 </head>
 <body>
     <div class="container">
-        <nav class="navbar navbar-expand-lg navbar-light border-bottom header">
+        <nav class="navbar navbar-expand-lg navbar-light border-bottom header mb-4">
             <a class="ml-5 navbar-brand title" href="#">
                 <div class="p-1">
                     <h1>Musify</h1>
@@ -30,16 +33,16 @@
                         <a class="nav-link h4 text" href="#">Главная <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item {% if current_page == 'music' %} active {% endif %}">
-                        <a class="nav-link h4" href="#">Музыка</a>
+                        <a class="nav-link h4" href="/">Музыка</a>
                     </li>
-                    <li class="nav-item {% if current_page == 'music' %} active {% endif %}">
+                    <li class="nav-item {% if current_page == 'updates' %} active {% endif %}">
                         <a class="nav-link h4" href="#">Обновления</a>
                     </li>
                 </ul>
                 <span class="navbar-text mt-2 mr-3">
                     <ul class="navbar-nav">
                         <li class="nav-item {% if current_page == 'login' %} active {% endif %}">
-                            <a class="nav-link h5" href="#">Вход</a>
+                            <a class="nav-link h5" href="{% url 'auth:login' %}">Вход</a>
                         </li>
                     </ul>
                 </span>

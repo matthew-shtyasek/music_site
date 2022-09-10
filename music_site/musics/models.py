@@ -32,8 +32,11 @@ class Musician(Artist):
                                   verbose_name='Отчество')
 
     @property
-    def full_name(self):
+    def name(self):
         return str(self)
+
+    def get_absolute_url(self):
+        return '#'
 
     def __str__(self):
         name = f'{self.last_name} {self.first_name[0]}.'
