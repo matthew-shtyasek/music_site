@@ -44,12 +44,18 @@
                         <li class="nav-item {% if current_page == 'login' %} active {% endif %}">
                             <a class="nav-link h5" href="{% url 'auth:login' %}">Вход</a>
                         </li>
+                        <li class="nav-item {% if current_page == 'signin' %} active {% endif %}">
+                            <a class="nav-link h5" href="{% url 'auth:signin' %}">Регистрация</a>
+                        </li>
                     </ul>
                 </span>
             </div>
         </nav>
 
         <div class="content">
+            {% for message in messages %}
+                {% include 'message.html' with message=message %}
+            {% endfor %}
             {% block content %}
             {% endblock %}
         </div>

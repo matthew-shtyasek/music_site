@@ -132,4 +132,23 @@ MEDIA_URL = '/media/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'auth.backends.EmailAuthBackend',
+)
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'mettewjowannini@gmail.com'
+EMAIL_HOST_PASSWORD = 'osbrgsexxltpwvcc'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+
+# AUTHENTICATION SETTINGS
+
+PASSWORD_RESET_TIMEOUT_DAYS = 1
+
+AUTH_USER_MODEL = 'custom_auth.CustomUser'
