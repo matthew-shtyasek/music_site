@@ -1,7 +1,8 @@
 from django import forms as dj_forms
-from django.contrib.auth import get_user_model
 from django.contrib.auth import forms
 from django.forms import fields
+
+from auth.models import CustomUser
 
 
 class LoginForm(forms.AuthenticationForm):
@@ -20,7 +21,7 @@ class RegisterForm(forms.UserCreationForm):
                                 label='Электронная почта')
 
     class Meta:
-        model = get_user_model()
+        model = CustomUser
         fields = ('username', 'email')
 
     def __init__(self, *args, **kwargs):

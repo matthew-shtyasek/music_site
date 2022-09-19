@@ -9,9 +9,8 @@ from django.views import View
 
 from auth import forms, form_error_parser
 from auth.forms import SetPasswordForm
+from auth.models import CustomUser
 from auth.token import user_tokenizer
-
-User = get_user_model()
 
 
 class LoginView(views.LoginView):
@@ -45,7 +44,7 @@ class RegisterView(View):
         form = forms.RegisterForm(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-            user = User(username=cd['username'], email=cd['email'])
+            user = CustomUser(username=cd['username'], email=cd['email'])
             user.save()
             subject = 'Подтверждение'
             token = user_tokenizer.make_token(user)
@@ -63,7 +62,7 @@ class RegisterView(View):
 
 class SetPasswordView(View):
     def get(self, request):
-        user = User.objects.get(id=request.GET['id'])
+        user = CustomUser.objects.get(id=request.GET['id'])
 
         if user and user_tokenizer.check_token(user, request.GET['token']):
             return render(request, template_name='registration/set_password.html', context={'form': SetPasswordForm(user)})
@@ -71,7 +70,7 @@ class SetPasswordView(View):
         return redirect(reverse('auth:signin'))
 
     def post(self, request):
-        user = User.objects.get(id=request.GET['id'])
+        user = CustomUser.objects.get(id=request.GET['id'])
         form = SetPasswordForm(user, request.POST)
         if form.is_valid():
             cd = form.cleaned_data

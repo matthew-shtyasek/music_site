@@ -132,11 +132,6 @@ MEDIA_URL = '/media/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
-AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-    'auth.backends.EmailAuthBackend',
-)
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -148,6 +143,12 @@ EMAIL_USE_TLS = True
 
 
 # AUTHENTICATION SETTINGS
+
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'auth.backends.EmailAuthBackend',
+)
 
 PASSWORD_RESET_TIMEOUT_DAYS = 1
 
