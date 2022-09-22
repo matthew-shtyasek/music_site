@@ -2,7 +2,10 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth import views
 from django.contrib import messages
+from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
+from django.core.validators import validate_email
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
@@ -10,6 +13,7 @@ from django.views import View
 from auth import forms, form_error_parser
 from auth.forms import SetPasswordForm
 from auth.models import CustomUser
+from auth.tasks import send_token_message
 from auth.token import user_tokenizer
 
 
@@ -41,30 +45,33 @@ class RegisterView(View):
         return render(request, template_name='registration/register.html', context=self.context)
 
     def post(self, request, *args, **kwargs):
-        def send(user):
-            subject = 'Подтверждение'
-            token = user_tokenizer.make_token(user)
-            message = f'Для подтверждения регистрации перейдите по ссылке {request.build_absolute_uri(reverse("auth:set_password"))}' + f'?id={user.id}&token={token}'
-            email_status =  send_mail(subject=subject, message=message, from_email=settings.EMAIL_HOST, recipient_list=[user.email])
-            if email_status == 1:
-                messages.add_message(request, messages.INFO, 'Письмо со ссылкой успешно отправлено на ваш электронный почтовый ящик')
-            else:
-                messages.add_message(request, messages.ERROR, 'При отправке письма со ссылкой на ваш электронный почтовый ящик произошла ошибка')
-
         if request.is_ajax():
-            user = CustomUser.objects.get(email=request.POST.get('email'))
-            if user.is_active:
-                send(user)
-            else:
-                messages.add_message(request, messages.ERROR, 'Ваш пользователь заблокирован, вы не можете восстановить пароль!')
-            return render(request, template_name='messages.html', context={'messages': messages.get_messages(request)})  # ctrl + tab + f1
+            try:
+                validate_email(request.POST.get('email'))
+                user = CustomUser.objects.get(email=request.POST.get('email'))
+            except ValidationError:
+                try:
+                    user = CustomUser.objects.get(username=request.POST.get('email'))
+                except CustomUser.DoesNotExist:
+                    user = None
+                    messages.add_message(request, messages.ERROR, 'Пользователя с таким логином не существует!')
+
+            if user:
+                if user.is_active:
+                    send_token_message.delay(user.id, request.build_absolute_uri(reverse("auth:set_password")))
+                    messages.add_message(request, messages.INFO, 'Сообщение со ссылкой для смены пароля было отправлено на вашу почту')
+                else:
+                    messages.add_message(request, messages.ERROR, 'Ваш пользователь заблокирован, вы не можете восстановить пароль!')
+
+            return render(request, template_name='messages.html', context={'messages': messages.get_messages(request)})
         else:
             form = forms.RegisterForm(request.POST)
             if form.is_valid():
                 cd = form.cleaned_data
                 user = CustomUser(username=cd['username'], email=cd['email'])
                 user.save()
-                send(user)
+                send_token_message.delay(user.id, request.build_absolute_uri(reverse("auth:set_password")))
+                messages.add_message(request, messages.INFO, 'Сообщение со ссылкой для смены пароля было отправлено на вашу почту')
             else:
                 form_error_parser.parse(request, form)
             self.context['form'] = form
