@@ -26,7 +26,7 @@ class LoginView(views.LoginView):
 
     def form_invalid(self, form):
         messages.add_message(self.request, messages.ERROR, 'Логин или пароль введены неверно!')
-        messages.add_message(self.request, messages.INFO, f'<a href="#">Забыли пароль?</a>')
+        messages.add_message(self.request, messages.INFO, f'<a href="#" class="forgot-password">Забыли пароль?</a>')
         return super().form_invalid(form)
 
 
@@ -41,22 +41,34 @@ class RegisterView(View):
         return render(request, template_name='registration/register.html', context=self.context)
 
     def post(self, request, *args, **kwargs):
-        form = forms.RegisterForm(request.POST)
-        if form.is_valid():
-            cd = form.cleaned_data
-            user = CustomUser(username=cd['username'], email=cd['email'])
-            user.save()
+        def send(user):
             subject = 'Подтверждение'
             token = user_tokenizer.make_token(user)
             message = f'Для подтверждения регистрации перейдите по ссылке {request.build_absolute_uri(reverse("auth:set_password"))}' + f'?id={user.id}&token={token}'
-            email_status = send_mail(subject=subject, message=message, from_email=settings.EMAIL_HOST, recipient_list=[user.email])
+            email_status =  send_mail(subject=subject, message=message, from_email=settings.EMAIL_HOST, recipient_list=[user.email])
             if email_status == 1:
                 messages.add_message(request, messages.INFO, 'Письмо со ссылкой успешно отправлено на ваш электронный почтовый ящик')
             else:
                 messages.add_message(request, messages.ERROR, 'При отправке письма со ссылкой на ваш электронный почтовый ящик произошла ошибка')
+
+        if request.is_ajax():
+            user = CustomUser.objects.get(email=request.POST.get('email'))
+            if user.is_active:
+                send(user)
+            else:
+                messages.add_message(request, messages.ERROR, 'Ваш пользователь заблокирован, вы не можете восстановить пароль!')
+            return render(request, template_name='messages.html', context={'messages': messages.get_messages(request)})  # ctrl + tab + f1
         else:
-            form_error_parser.parse(request, form)
-        self.context['form'] = form
+            form = forms.RegisterForm(request.POST)
+            if form.is_valid():
+                cd = form.cleaned_data
+                user = CustomUser(username=cd['username'], email=cd['email'])
+                user.save()
+                send(user)
+            else:
+                form_error_parser.parse(request, form)
+            self.context['form'] = form
+
         return render(request, template_name='registration/register.html', context=self.context)
 
 
@@ -80,3 +92,6 @@ class SetPasswordView(View):
             return redirect(reverse('musics:main'))
         form_error_parser.parse(request, form)
         return render(request, template_name='registration/set_password.html', context={'form': form})
+
+
+# class ChangePasswordView

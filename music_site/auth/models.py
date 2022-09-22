@@ -41,7 +41,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False,
                                    verbose_name='Персонал')
     is_active = models.BooleanField(default=False,
-                                    verbose_name='Заблокирован')
+                                    verbose_name='Активирован')
     date_joined = models.DateTimeField(default=timezone.now,
                                        verbose_name='Дата регистрации')
 
@@ -52,3 +52,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
+
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'

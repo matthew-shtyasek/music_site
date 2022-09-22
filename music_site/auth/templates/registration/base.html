@@ -39,6 +39,22 @@
     </div>
 {% endblock %}
 
+{% block domready %}
+    $(document).on("click", ".forgot-password", function (event) {
+        console.log(1);
+        event.preventDefault();
 
-
-
+        $.ajax({
+            url: '{% url "auth:signin" %}',
+            method: 'post',
+            dataType: 'html',
+            data: {
+                email: $('input[name="username"]').val(),
+                csrfmiddlewaretoken: getCookie('csrftoken'),
+            },
+            success: function (data) {
+                $('.messages').get(0).innerHTML += data;
+            }
+        });
+    });
+{% endblock %}
