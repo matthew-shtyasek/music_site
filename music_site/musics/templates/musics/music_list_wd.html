@@ -1,0 +1,5 @@
+{% for song in songs %}
+    {% include 'musics/music_item.html' with song=song %}
+{% empty %}
+    {% include 'musics/music_item.html' with song=single_song %}
+{% endfor %}

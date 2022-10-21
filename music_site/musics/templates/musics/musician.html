@@ -1,0 +1,27 @@
+{% extends 'root.html' %}
+{% load static %}
+
+{% block title %}{{ artist.name }}{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/music_list.css' %}">
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/music_list.js' %}"></script>
+{% endblock %}
+
+
+{% block content %}
+    <div class="artist">
+        <h4>Исполнитель {{ artist.name }}</h4>
+        <p></p>
+    </div>
+
+    {% if songs|length > 0 %}
+        <h5>Список песен:</h5>
+    {% else %}
+        <h5>У исполнителя нет песен</h5>
+    {% endif %}
+    {% include 'musics/music_list.html' with songs=songs %}
+{% endblock %}

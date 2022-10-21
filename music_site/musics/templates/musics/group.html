@@ -1,0 +1,56 @@
+{% extends 'root.html' %}
+{% load thumbnail %}
+
+{% block title %}Группа «{{ artist }}»{% endblock %}
+
+{% block content %}
+    <div class="artist">
+        <h4>Группа «{{ artist }}»</h4>
+        {% if artist.photo %}
+            {% thumbnail artist.photo '300' as photo %}
+                <img src="{{ photo.url }}" alt="">
+            {% endthumbnail %}
+        {% endif %}
+
+        <table class="artists border-0">
+            {% for musician in artist.musicians.all %}
+                <tr>
+                    <td class="pl-1 pr-2">
+                        <a href="{{ musician.get_absolute_url }}">{{ musician.name }}</a>
+                    </td>
+                    <td class="pl-1 pr-2">
+                        {% if musician.photo %}
+                            {% thumbnail musician.photo '100' as photo %}
+                                <a href="{{ musician.photo.url }}">
+                                    <img src="{{ photo.url }}" alt="Фотография не найдена">
+                                </a>
+                            {% endthumbnail %}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+
+        <h5>Композиции:</h5>
+        {% include 'musics/music_list_wd.html' with songs=songs %}
+    </div>
+{% endblock %}
+
+<script>
+{% block domready %}
+    let page = 1;
+
+    window.onscroll += function () {
+        let url = `/?page=${page}`;
+        if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight) {
+            $.ajax({
+                url: `{% url "musics:artist" artist.slug %}${url}`,
+                type: 'get',
+                success: function (data) {
+                    ++page;
+                }
+            });
+        }
+    }
+{% endblock %}
+</script>

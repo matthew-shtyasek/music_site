@@ -1,11 +1,7 @@
-from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.contrib.auth import views
 from django.contrib import messages
 from django.core.exceptions import ValidationError
-from django.core.mail import send_mail
 from django.core.validators import validate_email
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View

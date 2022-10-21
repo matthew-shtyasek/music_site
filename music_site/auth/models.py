@@ -54,5 +54,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.username
 
     class Meta:
+        ordering = ('username', 'date_joined')
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'

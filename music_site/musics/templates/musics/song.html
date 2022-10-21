@@ -1,0 +1,36 @@
+{% extends 'root.html' %}
+{% load static %}
+
+{% block title %}{{ song.name }} ({{ song.album.artist }}){% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/music_list.css' %}">
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/music_list.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="song-full-info">
+        <h4>Песня «{{ song.name }}» ({{ song.album.artist }})</h4>
+        <p>Название: {{ song.name }}</p>
+        <p>Написана: {{ song.written }}</p>
+        <p>Альбом: <a href="{{ song.album.get_absolute_url }}">{{ song.album }}</a></p>
+        <p>Выпущен: {{ song.album.released }}</p>
+        <p>Исполнитель: <a href="{{ song.album.artist.get_absolute_url }}">{{ song.album.artist }}</a></p>
+        {% if song.description %}
+            <p>История: {{ song.description }}</p>
+        {% endif %}
+        <p>
+            {% include 'musics/music_list.html' with single_song=song %}
+        </p>
+
+        {% with songs=song.artist_type.songs.all.remove.song|slice:'0:10' %}
+            {% if songs|length > 0 %}
+                <h4>Другие песни от этого исполнителя:</h4>
+                {% include 'musics/music_list.html' with songs=songs %}
+            {% endif %}
+        {% endwith %}
+    </div>
+{% endblock %}
