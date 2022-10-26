@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'musics.apps.MusicsConfig',
     'sorl.thumbnail',
-    'playlist.apps.PlaylistConfig',
+    'profiles.apps.ProfilesConfig',
 ]
 
 MIDDLEWARE = [

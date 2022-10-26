@@ -1,4 +1,4 @@
-from django.contrib.auth import views
+from django.contrib.auth import views, logout
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
@@ -98,3 +98,8 @@ class SetPasswordView(View):
 
 
 # class ChangePasswordView
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('musics:main')
