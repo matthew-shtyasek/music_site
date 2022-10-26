@@ -3,7 +3,7 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views import View
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 
 from musics.models import Song, Artist, MusicGroup, Musician
 
@@ -50,16 +50,20 @@ class MostPopularMusicView(ListView):
         return render(request, template_name=template_name, context=context)
 
 
-class SongView(View):
+class SongView(DetailView):
     model = Song
     template_name = 'musics/song.html'
 
-    def get(self, request, slug):
-        song = self.model.objects.get(slug=slug)
+    def get_context_data(self, **kwargs):
+        song = kwargs['object']
+        songs = Song.objects \
+            .filter(album__artist_id=song.album.artist_id, album__artist_type=song.album.artist_type)\
+            .exclude(slug=song.slug)
         context = {
             'song': song,
+            'songs': songs,
         }
-        return render(request, template_name=self.template_name, context=context)
+        return context
 
 
 class ArtistView(View):

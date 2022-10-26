@@ -23,14 +23,12 @@
             <p>История: {{ song.description }}</p>
         {% endif %}
         <p>
-            {% include 'musics/music_list.html' with single_song=song %}
+            {% include 'musics/music_list.html' with song=song songs="" %}
         </p>
 
-        {% with songs=song.artist_type.songs.all.remove.song|slice:'0:10' %}
-            {% if songs|length > 0 %}
-                <h4>Другие песни от этого исполнителя:</h4>
-                {% include 'musics/music_list.html' with songs=songs %}
-            {% endif %}
-        {% endwith %}
+        {% if songs|length > 0 %}
+            <h4>Другие песни от этого исполнителя:</h4>
+            {% include 'musics/music_list.html' with songs=songs %}
+        {% endif %}
     </div>
 {% endblock %}

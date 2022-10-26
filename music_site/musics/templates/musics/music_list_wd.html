@@ -1,5 +1,5 @@
-{% for song in songs %}
-    {% include 'musics/music_item.html' with song=song %}
+{% for item_song in songs %}
+    {% include 'musics/music_item.html' with song=item_song %}
 {% empty %}
-    {% include 'musics/music_item.html' with song=single_song %}
+    {% include 'musics/music_item.html' with song=song %}
 {% endfor %}
