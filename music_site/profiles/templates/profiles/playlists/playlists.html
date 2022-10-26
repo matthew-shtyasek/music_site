@@ -1,0 +1,15 @@
+<div class="playlists">
+    <ul>
+        {% for playlist in playlists %}
+            <li>
+                <a href="#" class="d-block p-1">{{ playlist.name|truncatechars:"20" }}</a>
+            </li>
+        {% empty %}
+            {% if current_user == user %}
+                У вас нет плейлистов
+            {% else %}
+                У пользователя {{ current_user.username }} нет плейлистов
+            {% endif %}
+        {% endfor %}
+    </ul>
+</div>

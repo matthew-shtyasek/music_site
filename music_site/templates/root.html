@@ -54,7 +54,7 @@
                     <ul class="navbar-nav">
                         {% if user.is_authenticated %}
                             <li class="nav-item {% if current_page == 'profile' %}active{% endif %}">
-                                <a class="nav-link h5" href="profile/{{ user.id }}" >{{ user.username|truncatechars:"22" }}</a>
+                                <a class="nav-link h5" href="{% url 'profiles:profile' user.pk %}" >{{ user.username|truncatechars:"22" }}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link h5" href="{% url 'auth:logout' %}">Выход</a>

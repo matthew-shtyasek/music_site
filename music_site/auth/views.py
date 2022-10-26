@@ -16,6 +16,7 @@ from auth.token import user_tokenizer
 class LoginView(views.LoginView):
     extra_context = {'current_page': 'login'}
     form_class = forms.LoginForm
+    redirect_authenticated_user = True
 
     def get(self, request, *args, **kwargs):
         var = super().get(request, *args, **kwargs)

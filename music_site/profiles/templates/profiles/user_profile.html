@@ -1,0 +1,23 @@
+{% extends 'root.html' %}
+
+{% block title %}Профиль пользователя{% endblock %}
+
+{% block content %}
+    <div>
+        <h4>Основная информация</h4>
+        <p>Логин: {{ current_user.username }}</p>
+        <p>
+            {% if current_user == user %}
+                Публичные плейлисты:
+            {% else %}
+                Плейлисты:
+            {% endif %}
+            {% include 'profiles/playlists/playlists.html' with current_user=current_user playlists=public_playlists %}
+        </p>
+
+        {% if current_user == user %}
+            Приватные плейлисты:
+            {% include 'profiles/playlists/playlists.html' with current_user=current_user playlists=public_playlists %}
+        {% endif %}
+    </div>
+{% endblock %}

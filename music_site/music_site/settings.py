@@ -14,6 +14,7 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from Lib import os
+from django.urls import reverse
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -158,3 +159,5 @@ AUTHENTICATION_BACKENDS = (
 PASSWORD_RESET_TIMEOUT_DAYS = 1
 
 AUTH_USER_MODEL = 'custom_auth.CustomUser'
+
+LOGIN_REDIRECT_URL = '/profile/'
