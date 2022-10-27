@@ -1,0 +1,8 @@
+<div class="song-add-dropdown position-absolute" style="display: none">
+    <div class="dropdown-content">
+        <div class="dropdown-item" id="playlist-create">Новый плейлист</div>
+        {% for playlist in user.playlists.all %}
+            <div class="dropdown-item" id="playlist-{{ playlist.id }}">{{ playlist.name|truncatechars:"24" }}</div>
+        {% endfor %}
+    </div>
+</div>

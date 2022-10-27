@@ -26,7 +26,7 @@
 }
 
 .song .song-play, .song .song-detail {
-  display: inline-block;
+  display: block;
 }
 
 
@@ -59,4 +59,39 @@
 #line1, #line2 {
   transform:  scale(40%);
 
+}
+
+.add-song {
+  border: 1px lightgray solid;
+  border-radius: 3px;
+  padding: 10px 17px;
+  background-color: #f4ffff;
+  transition: 0.1s;
+}
+
+.add-song:hover {
+  background-color: lightgray;
+  border: 1px white solid;
+  transition: 0.3s;
+}
+
+.song-add-dropdown {
+  border: 2px lightgray solid;
+  border-radius: 4px;
+  z-index: 1;
+}
+
+.song-add-dropdown:hover {
+  cursor: default;
+}
+
+.song-add-dropdown .dropdown-content {
+  border-bottom: 1px lightgray solid;
+  border-right: 1px lightgray solid;
+  user-select: none;
+  background-color: #fefefe;
+}
+
+.song-add-dropdown .dropdown-content:hover {
+  cursor: pointer;
 }
