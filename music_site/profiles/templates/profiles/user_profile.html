@@ -1,9 +1,14 @@
 {% extends 'root.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/playlist.css' %}">
+{% endblock %}
 
 {% block title %}Профиль пользователя{% endblock %}
 
 {% block content %}
-    <div>
+    <div class="w-75">
         <h4>Основная информация</h4>
         <p>Логин: {{ current_user.username }}</p>
         <p>
@@ -17,7 +22,7 @@
 
         {% if current_user == user %}
             Приватные плейлисты:
-            {% include 'profiles/playlists/playlists.html' with current_user=current_user playlists=public_playlists %}
+            {% include 'profiles/playlists/playlists.html' with current_user=current_user playlists=private_playlists %}
         {% endif %}
     </div>
 {% endblock %}

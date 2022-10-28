@@ -19,6 +19,12 @@
     {% block js %}
     {% endblock %}
 
+    {% block extracss %}
+    {% endblock %}
+
+    {% block extrajs %}
+    {% endblock %}
+
     <script>
         window.CSRF_TOKEN = "{{ csrf_token }}";
         $(document).ready(function () {
@@ -29,53 +35,57 @@
 </head>
 <body>
     <div class="container">
-        <nav class="navbar navbar-expand-lg navbar-light border-bottom header mb-4">
-            <a class="ml-5 navbar-brand title" href="#">
-                <div class="p-1">
-                    <h1>Musify</h1>
-                </div>
-            </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarText">
-                <ul class="navbar-nav mr-auto mt-2">
-                    <li class="nav-item {% if current_page == 'main' %} active {% endif %}">
-                        <a class="nav-link h4 text" href="#">Главная <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item {% if current_page == 'music' %} active {% endif %}">
-                        <a class="nav-link h4" href="/">Музыка</a>
-                    </li>
-                    <li class="nav-item {% if current_page == 'updates' %} active {% endif %}">
-                        <a class="nav-link h4" href="#">Обновления</a>
-                    </li>
-                </ul>
-                <span class="navbar-text mt-2 mr-3">
-                    <ul class="navbar-nav">
-                        {% if user.is_authenticated %}
-                            <li class="nav-item {% if current_page == 'profile' %}active{% endif %}">
-                                <a class="nav-link h5" href="{% url 'profiles:profile' user.pk %}" >{{ user.username|truncatechars:"22" }}</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link h5" href="{% url 'auth:logout' %}">Выход</a>
-                            </li>
-                        {% else %}
-                            <li class="nav-item {% if current_page == 'login' %} active {% endif %}">
-                                <a class="nav-link h5" href="{% url 'auth:login' %}">Вход</a>
-                            </li>
-                            <li class="nav-item {% if current_page == 'signin' %} active {% endif %}">
-                                <a class="nav-link h5" href="{% url 'auth:signin' %}">Регистрация</a>
-                            </li>
-                        {% endif %}
+        {% if not render_without_header %}
+            <nav class="navbar navbar-expand-lg navbar-light border-bottom header mb-4">
+                <a class="ml-5 navbar-brand title" href="#">
+                    <div class="p-1">
+                        <h1>Musify</h1>
+                    </div>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarText">
+                    <ul class="navbar-nav mr-auto mt-2">
+                        <li class="nav-item {% if current_page == 'main' %} active {% endif %}">
+                            <a class="nav-link h4 text" href="#">Главная <span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item {% if current_page == 'music' %} active {% endif %}">
+                            <a class="nav-link h4" href="/">Музыка</a>
+                        </li>
+                        <li class="nav-item {% if current_page == 'updates' %} active {% endif %}">
+                            <a class="nav-link h4" href="#">Обновления</a>
+                        </li>
                     </ul>
-                </span>
-            </div>
-        </nav>
+                    <span class="navbar-text mt-2 mr-3">
+                        <ul class="navbar-nav">
+                            {% if user.is_authenticated %}
+                                <li class="nav-item {% if current_page == 'profile' %}active{% endif %}">
+                                    <a class="nav-link h5" href="{% url 'profiles:profile' user.pk %}" >{{ user.username|truncatechars:"22" }}</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link h5" href="{% url 'auth:logout' %}">Выход</a>
+                                </li>
+                            {% else %}
+                                <li class="nav-item {% if current_page == 'login' %} active {% endif %}">
+                                    <a class="nav-link h5" href="{% url 'auth:login' %}">Вход</a>
+                                </li>
+                                <li class="nav-item {% if current_page == 'signin' %} active {% endif %}">
+                                    <a class="nav-link h5" href="{% url 'auth:signin' %}">Регистрация</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </span>
+                </div>
+            </nav>
+        {% endif %}
 
-        <div class="content">
-            <div class="messages">
-                {% include 'messages.html' %}
-            </div>
+        <div class="content d-flex justify-content-center align-items-center w-100">
+            {% if not render_without_header %}
+                <div class="messages">
+                    {% include 'messages.html' %}
+                </div>
+            {% endif %}
 
             {% block content %}
             {% endblock %}

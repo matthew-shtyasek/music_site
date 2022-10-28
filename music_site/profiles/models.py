@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.urls import reverse
 
 from musics.models import Song
 
@@ -29,6 +30,9 @@ class Playlist(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('profiles:detail_playlist', args=[self.pk])
 
     class Meta:
         ordering = ('name',)

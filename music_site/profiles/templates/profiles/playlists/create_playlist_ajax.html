@@ -1,0 +1,14 @@
+<div class="create-playlist d-flex border rounded w-100" style="background-color: white;">
+    <div class="w-100 d-flex justify-content-center align-items-center">
+        <form action="{% url 'profiles:create_playlist' %}" method="post" class="create-playlist w-50 pl-4 pr-4 pb-2" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for field in form %}
+                <label for="{{ field.auto_id }}" class="{{ field.label_class }} {% if forloop.counter != 1 %}mt-2{% endif %} mb-2">
+                    {{ field.label }}
+                </label>
+                {{ field }}
+            {% endfor %}
+            <input type="submit" class="button mt-2 pt-1 pb-1 pl-2 pr-2 float-right" value="Создать">
+        </form>
+    </div>
+</div>

@@ -1,0 +1,21 @@
+.playlist-item {
+    width: 250px;
+    height: 200px;
+    display: flex;
+    border: 2px gray solid;
+    border-radius: 4px;
+    overflow: auto;
+    justify-content: center;
+    align-items: center;
+    font-size: x-large;
+}
+
+.playlists a {
+    color: black;
+    text-decoration: none;
+}
+
+.playlists a:hover {
+    color: black;
+}
+
