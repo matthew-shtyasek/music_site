@@ -2,6 +2,7 @@ from django.contrib.auth import views, logout
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
@@ -18,9 +19,13 @@ class LoginView(views.LoginView):
     form_class = forms.LoginForm
     redirect_authenticated_user = True
 
+    def post(self, request, *args, **kwargs):
+        result = super().post(request, *args, **kwargs)
+        return result
+
     def get(self, request, *args, **kwargs):
-        var = super().get(request, *args, **kwargs)
-        return var
+        self.extra_context = dict()
+        return super().get(request, *args, **kwargs)
 
     def form_valid(self, form):
         return super().form_valid(form)

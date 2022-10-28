@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'musics.apps.MusicsConfig',
     'sorl.thumbnail',
     'profiles.apps.ProfilesConfig',
+    'redis',
 ]
 
 MIDDLEWARE = [

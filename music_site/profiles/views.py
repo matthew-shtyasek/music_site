@@ -1,12 +1,18 @@
+import redis
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.views.generic import DetailView, CreateView
 
 from auth.models import CustomUser
 from musics.forms import PlaylistCreateForm
 from musics.models import Song
 from profiles.models import Playlist
+
+
+r = redis.StrictRedis('localhost')
 
 
 class UserProfileView(DetailView):
@@ -51,25 +57,33 @@ class PlaylistCreateView(CreateView):
         return redirect(self.get_success_url())
 
     def get(self, request):
+        if not request.user.is_authenticated:
+            return redirect(reverse('auth:login'), kwargs={'next': f'{request.build_absolute_uri()}'})
         if request.is_ajax():
-
             self.template_name = 'profiles/playlists/create_playlist_ajax.html'
         else:
             self.template_name = 'profiles/playlists/create_playlist.html'
         return super().get(request)
 
 
+class PlaylistDetailView(DetailView):
+    model = Playlist
+    template_name = 'profiles/playlists/playlist_detail.html'
+    context_object_name = 'playlist'
+
+
+@login_required
 def add_song_to_playlist(request, song_id, playlist_id):
     if request.is_ajax():
         song = Song.objects.get(id=song_id)
         playlist = Playlist.objects.get(id=playlist_id)
         playlist.songs.add(song)
         playlist.save()
+        r.sadd(f'user:playlists:{request.user.id}', f'song:{song_id}')
+        for song_item in playlist.songs.all():
+            if song_item != song:
+                r.zincrby(f'song:{song_item.id}', 1, f'song:{song_id}')
+                r.zincrby(f'song:{song_id}', 1, f'song:{song_item.id}')
         return JsonResponse(dict())
     raise PermissionDenied()
 
-
-class PlaylistDetailView(DetailView):
-    model = Playlist
-    template_name = 'profiles/playlists/playlist_detail.html'
-    context_object_name = 'playlist'
