@@ -38,3 +38,29 @@ class NewsAdmin(admin.ModelAdmin):
         if getattr(obj, 'author', None) is None:
             obj.author = request.user
         obj.save()
+
+
+class CommentAdmin(admin.ModelAdmin):
+    fields = ('text',
+              'author',
+              'published',
+              'created',
+              'updated')
+    readonly_fields = ('created',
+                       'updated')
+    list_display = ('author',
+                    'published',
+                    'created',
+                    'updated')
+    search_fields = ('author',)
+    list_filter = ('published',
+                   'created',
+                   'updated')
+    list_editable = ('published',)
+    ordering = ('-created',
+                '-updated')
+
+    def save_model(self, request, obj, form, change):
+        if getattr(obj, 'author', None) is None:
+            obj.author = request.user
+        obj.save()

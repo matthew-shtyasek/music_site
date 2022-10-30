@@ -11,16 +11,22 @@ class News(models.Model):
                             verbose_name='Человекопонятная ссылка')
     body = models.TextField(blank=False,
                             verbose_name='Текст')
-    image = models.ImageField(upload_to='media/news/%Y/%m/%d/')
+    image = models.ImageField(upload_to='media/news/%Y/%m/%d/',
+                              verbose_name='Изображение')
     author = models.ForeignKey(CustomUser,
                                on_delete=models.CASCADE,
                                blank=True,
                                null=True,
-                               related_name='news',
+                               related_name='many_news',
                                verbose_name='Автор')
     likes = models.ManyToManyField(CustomUser,
                                    related_name='liked_news',
                                    verbose_name='Лайки')
+    comments = models.ForeignKey('Comment',
+                                 null=True,
+                                 related_name='news',
+                                 on_delete=models.CASCADE,
+                                 verbose_name='Комментарии')
     created = models.DateTimeField(auto_now_add=True,
                                    verbose_name='Создана')
     updated = models.DateTimeField(auto_now=True,
@@ -36,3 +42,27 @@ class News(models.Model):
         verbose_name = 'Новость'
         verbose_name_plural = 'Новости'
 
+
+class Comment(models.Model):
+    text = models.TextField(blank=False,
+                            verbose_name='Текст')
+    author = models.ForeignKey(CustomUser,
+                               on_delete=models.CASCADE,
+                               blank=True,
+                               null=True,
+                               related_name='comments',
+                               verbose_name='Автор')
+    likes = models.ManyToManyField(CustomUser,
+                                   related_name='liked_comments',
+                                   verbose_name='Лайки')
+    created = models.DateTimeField(auto_now_add=True,
+                                   verbose_name='Написан')
+    updated = models.DateTimeField(auto_now=True,
+                                   verbose_name='Изменён')
+    published = models.BooleanField(default=False,
+                                    verbose_name='Опубликован')
+
+    class Meta:
+        ordering = ('-created',)
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
