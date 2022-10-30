@@ -1,0 +1,34 @@
+{% extends 'root.html' %}
+{% load thumbnail %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/news.css' %}">
+{% endblock %}
+
+{% block title %}{{ news.title }}{% endblock %}
+
+{% block content %}
+    <div class="news-content w-75 flex-column">
+        <h1>{{ news.title }}</h1>
+        <div class="flex-row mt-lg-3">
+            {% if news.image %}
+                {% thumbnail news.image '150x200' crop="center" as im %}
+                    <img src="{{ im.url }}" alt="Не удалось загрузить изображение" class="img-responsive float-left mr-3">
+                {% endthumbnail %}
+            {% endif %}
+            <div>
+                <p>{{ news.body }}</p>
+                <div class="publish-date w-100 text-right">
+                    <p>Автор: <a href="{{ news.author.get_absolute_uri }}">{{ news.author }}</a></p>
+                    <p>Опубликовано {{ news.created }}</p>
+                    <p>
+                        {% if news.created != news.updated %}
+                            Отредактировано: {{ news.updated }}
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

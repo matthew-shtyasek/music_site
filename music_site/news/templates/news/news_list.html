@@ -1,0 +1,17 @@
+{% extends 'root.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/news.css' %}">
+{% endblock %}
+
+{% block title %}Новости{% endblock %}
+
+
+{% block content %}
+    <div class="news-block w-100 flex-column">
+        {% for news in news_list %}
+            {% include 'news/news_list_item.html' with news=news %}
+        {% endfor %}
+    </div>
+{% endblock %}

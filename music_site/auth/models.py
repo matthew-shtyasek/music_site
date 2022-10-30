@@ -1,3 +1,4 @@
+from django.urls import reverse
 from django.utils import timezone
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
@@ -52,6 +53,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
+
+    def get_absolute_uri(self):
+        return reverse('profiles:profile', args=[self.pk])
 
     class Meta:
         ordering = ('username', 'date_joined')

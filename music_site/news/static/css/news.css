@@ -1,0 +1,41 @@
+.news-block-item {
+    padding: 10px;
+    border: 2px gray solid;
+    border-radius: 4px;
+    background-color: lightcyan;
+    transition: 0.3s;
+}
+
+.news-block-item:hover {
+    transition: 0.3s;
+    background-color: lightskyblue;
+}
+
+.news-block-link {
+    color: black;
+    padding: 3px;
+}
+
+.news-block-link:hover {
+    color: black;
+    text-decoration: none;
+}
+
+.news-block-link p {
+    color: #777777;
+}
+
+.publish-date {
+    color: gray;
+}
+
+.publish-date p {
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+.content {
+    background-color: lightcyan;
+    padding: 10px;
+    border-radius: 10px;
+}

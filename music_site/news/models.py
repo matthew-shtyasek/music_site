@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 from auth.models import CustomUser
 
@@ -26,6 +27,9 @@ class News(models.Model):
                                    verbose_name='Изменена')
     published = models.BooleanField(default=False,
                                     verbose_name='Опубликована')
+
+    def get_absolute_uri(self):
+        return reverse('news:news_detail', args=[self.slug])
 
     class Meta:
         ordering = ('-created', '-updated')

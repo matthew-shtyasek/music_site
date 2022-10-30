@@ -1,0 +1,6 @@
+<a href="{{ news.get_absolute_uri }}" class="news-block-link">
+    <div class="news-block-item w-100 mb-3">
+        <h3>{{ news.title }}</h3>
+        <p>{{ news.body|truncatewords:"30" }}</p>
+    </div>
+</a>
