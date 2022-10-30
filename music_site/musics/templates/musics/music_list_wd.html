@@ -1,5 +1,9 @@
 {% for item_song in songs %}
     {% include 'musics/music_item.html' with song=item_song %}
 {% empty %}
-    {% include 'musics/music_item.html' with song=song %}
+    {% if song %}
+        {% include 'musics/music_item.html' with song=song %}
+    {% else %}
+        <h4 class="w-100">Нет подходящих песен</h4>
+    {% endif %}
 {% endfor %}

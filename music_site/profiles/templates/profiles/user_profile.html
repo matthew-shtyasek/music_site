@@ -24,5 +24,7 @@
             Приватные плейлисты:
             {% include 'profiles/playlists/playlists.html' with current_user=current_user playlists=private_playlists %}
         {% endif %}
+
+        {% include 'profiles/recommendations/recommendations.html' with songs=recommended_songs %}
     </div>
 {% endblock %}

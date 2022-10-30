@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'sorl.thumbnail',
     'profiles.apps.ProfilesConfig',
     'redis',
+    'news.apps.NewsConfig',
 ]
 
 MIDDLEWARE = [

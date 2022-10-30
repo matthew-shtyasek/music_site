@@ -10,7 +10,7 @@ from auth.models import CustomUser
 from musics.forms import PlaylistCreateForm
 from musics.models import Song
 from profiles.models import Playlist
-
+from profiles.recommender import get_recommended_songs
 
 r = redis.StrictRedis('localhost')
 
@@ -31,6 +31,7 @@ class UserProfileView(DetailView):
             private_playlists = request.user.playlists.filter(owner_id=pk, public=False)
             self.extra_context['public_playlists'] = public_playlists
             self.extra_context['private_playlists'] = private_playlists
+            self.extra_context['recommended_songs'] = get_recommended_songs(request.user)
             return super().get(request, pk)
 
 
@@ -53,7 +54,8 @@ class PlaylistCreateView(CreateView):
         self.object.owner = self.request.user
         self.object.save()
         if self.request.is_ajax():
-            return JsonResponse(dict())
+            return JsonResponse({'playlist_id': self.object.pk,
+                                 'playlist_name': self.object.name})
         return redirect(self.get_success_url())
 
     def get(self, request):
@@ -80,10 +82,18 @@ def add_song_to_playlist(request, song_id, playlist_id):
         playlist.songs.add(song)
         playlist.save()
         r.sadd(f'user:playlists:{request.user.id}', f'song:{song_id}')
+
+        incr_value = 1
+        try:
+            incr_value = int(r.get(f'song:{song_id}')) + 1
+        except:
+            pass
+        r.set(f'song:{song_id}', incr_value)
+
         for song_item in playlist.songs.all():
             if song_item != song:
-                r.zincrby(f'song:{song_item.id}', 1, f'song:{song_id}')
-                r.zincrby(f'song:{song_id}', 1, f'song:{song_item.id}')
+                r.zincrby(f'song:{song_item.id}:z', 1, f'song:{song_id}')
+                r.zincrby(f'song:{song_id}:z', 1, f'song:{song_item.id}')
         return JsonResponse(dict())
     raise PermissionDenied()
 

@@ -39,6 +39,7 @@ class Musician(Artist):
                                  verbose_name='Фамилия')
     patronymic = models.CharField(max_length=64,
                                   blank=True,
+                                  null=True,
                                   verbose_name='Отчество')
 
     @property
@@ -54,7 +55,7 @@ class Musician(Artist):
         name = f'{self.last_name} {self.first_name[0]}.'
         try:
             return name + f'{self.patronymic[0]}.'
-        except AttributeError:
+        except TypeError:
             return name
 
     class Meta:

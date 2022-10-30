@@ -42,7 +42,7 @@ $(document).ready(function () {
 
   //--------------------------------dropdown item click
   let is_dropdown_clicked = false;
-  $('.dropdown-item').click(function () {
+  function clickByDropdownItem () {
     if (is_dropdown_clicked)
       return;
 
@@ -71,7 +71,7 @@ $(document).ready(function () {
             </div>
           `);
 
-          (function addEvents () {
+          (function addEvents() {
             if ($('form.create-playlist').attr('class') !== undefined) {
               let classes = $('form.create-playlist').attr('class').replace('w-50', 'w-100');
               $('form.create-playlist').attr('class', classes);
@@ -91,14 +91,17 @@ $(document).ready(function () {
               $('.create-playlist').submit(function () {
                 $.post({
                   url: '/profile/create_playlist/',
-                  data: $(this).serialize()
+                  data: $(this).serialize(),
+                  success: function (data) {
+                    $('.song-add-dropdown .dropdown-content').prepend($('#playlist-create').clone().attr('id', `playlist-${data.playlist_id}`).text(data.playlist_name));
+                    $(`#playlist-${data.playlist_id}`).click(clickByDropdownItem);
+                  }
                 });
                 $('.dropdown-exit-button').click();
               });
             } else {
             }
           })();
-
 
 
         }
@@ -108,7 +111,9 @@ $(document).ready(function () {
         url: `/profile/add_song/${current_song}/${playlist_id}/`,
       });
     }
-  });
+  }
+
+  $('.dropdown-item').click(clickByDropdownItem);
 
 });
 

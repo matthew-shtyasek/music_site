@@ -80,9 +80,9 @@
             </nav>
         {% endif %}
 
-        <div class="content d-flex justify-content-center align-items-center w-100">
+        <div class="content flex-column d-flex justify-content-center align-items-center w-100">
             {% if not render_without_header %}
-                <div class="messages">
+                <div class="messages w-100">
                     {% include 'messages.html' %}
                 </div>
             {% endif %}

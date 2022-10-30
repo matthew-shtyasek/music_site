@@ -1,3 +1,12 @@
+{% load static %}
+{% block extracss %}
+    <link rel="stylesheet" href="{% static 'css/music_list.css' %}">
+{% endblock %}
+
+{% block extrajs %}
+    <script src="{% static 'js/music_list.js' %}"></script>
+{% endblock %}
+
 <div class="player w-75" id="ajax-paginated">
     {% include 'musics/music_list_wd.html' with song=song songs=songs %}
 </div>

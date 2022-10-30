@@ -5,7 +5,8 @@ from musics.models import Song, Musician, MusicGroup, Genre, Album
 
 @admin.register(Musician)
 class MusicianAdmin(admin.ModelAdmin):
-    fields = ('first_name',
+    fields = ('pk',
+              'first_name',
               'last_name',
               'patronymic',
               'slug',
@@ -13,6 +14,7 @@ class MusicianAdmin(admin.ModelAdmin):
               'description',
               'date_of_birth',
               'date_of_death')
+    readonly_fields = ('pk',)
     list_display = ('name',
                     'slug',
                     'date_of_birth',
@@ -29,13 +31,15 @@ class MusicianAdmin(admin.ModelAdmin):
 
 @admin.register(MusicGroup)
 class MusicGroupAdmin(admin.ModelAdmin):
-    fields = ('name',
+    fields = ('pk',
+              'name',
               'slug',
               'photo',
               'description',
               'musicians',
               'date_of_birth',
               'date_of_death')
+    readonly_fields = ('pk',)
     list_display = ('name',
                     'slug',
                     'date_of_birth',
