@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'profiles.apps.ProfilesConfig',
     'redis',
     'news.apps.NewsConfig',
+    'psycopg2',
 ]
 
 MIDDLEWARE = [
@@ -86,8 +87,16 @@ WSGI_APPLICATION = 'music_site.wsgi.application'
 
 DATABASES = {
     'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'contest',
+        'USER': 'technology',
+        'PASSWORD': '123456',
+        'HOST': 'localhost',
+        'PORT': '5432'
+    },
+    'sqlite': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
     }
 }
 

@@ -37,7 +37,7 @@
     <div class="container">
         {% if not render_without_header %}
             <nav class="navbar navbar-expand-lg navbar-light border-bottom header mb-4">
-                <a class="ml-5 navbar-brand title" href="#">
+                <a class="ml-5 navbar-brand title" href="{% if user.is_staff %}jjj{% else %}#{% endif %}">
                     <div class="p-1">
                         <h1>Musify</h1>
                     </div>
@@ -47,11 +47,11 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarText">
                     <ul class="navbar-nav mr-auto mt-2">
-                        <li class="nav-item {% if current_page == 'main' %} active {% endif %}">
-                            <a class="nav-link h4 text" href="#">Новости</a>
+                        <li class="nav-item {% if current_page == 'news' %} active {% endif %}">
+                            <a class="nav-link h4 text" href="{% url 'news:news_list' %}">Новости</a>
                         </li>
                         <li class="nav-item {% if current_page == 'music' %} active {% endif %}">
-                            <a class="nav-link h4" href="/">Музыка</a>
+                            <a class="nav-link h4" href="{% url 'musics:main' %}">Музыка</a>
                         </li>
                         <li class="nav-item {% if current_page == 'updates' %} active {% endif %}">
                             <a class="nav-link h4" href="#">Обновления</a>
@@ -64,7 +64,7 @@
                                     <a class="nav-link h5" href="{% url 'profiles:profile' user.pk %}" >{{ user.username|truncatechars:"22" }}</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link h5" href="{% url 'auth:logout' %}">Выход</a>
+                                    <a class="nav-link h5" href="{% url 'auth:logout' %}?next={{ request.path|urlencode }}">Выход</a>
                                 </li>
                             {% else %}
                                 <li class="nav-item {% if current_page == 'login' %} active {% endif %}">

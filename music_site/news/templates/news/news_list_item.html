@@ -1,6 +1,20 @@
+{% load thumbnail %}
 <a href="{{ news.get_absolute_uri }}" class="news-block-link">
-    <div class="news-block-item w-100 mb-3">
-        <h3>{{ news.title }}</h3>
-        <p>{{ news.body|truncatewords:"30" }}</p>
+    <div class="news-block-item d-flex w-100 mb-1 mt-1 flex-row">
+        <div class="d-block">
+            {% thumbnail news.image '90x120' crop='center' as im %}
+                <img src="{{ im.url }}" class="img-responsive rounded">
+            {% endthumbnail %}
+        </div>
+        <div class="main-block ml-2">
+            <h3>{{ news.title }}</h3>
+            <p class="mb-0">{{ news.body|truncatewords:"30" }}</p>
+        </div>
+        <!--<div class="float-right d-flex flex-column w-100 text-right">
+            <p>Опубликовано: {{ news.created }}</p>
+            {% if news.created != news.updated %}
+                <p>Изменено: {{ news.updated }}</p>
+            {% endif %}
+        </div>-->
     </div>
 </a>

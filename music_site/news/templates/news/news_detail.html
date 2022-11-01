@@ -19,16 +19,17 @@
             {% endif %}
             <div>
                 <p>{{ news.body }}</p>
-                <div class="publish-date w-100 text-right">
-                    <p>Автор: <a href="{{ news.author.get_absolute_uri }}">{{ news.author }}</a></p>
-                    <p>Опубликовано {{ news.created }}</p>
-                    <p>
-                        {% if news.created != news.updated %}
-                            Отредактировано: {{ news.updated }}
-                        {% endif %}
-                    </p>
-                </div>
             </div>
         </div>
     </div>
+    <div class="publish-date w-100 text-right">
+        <p>Автор: <a href="{{ news.author.get_absolute_uri }}">{{ news.author }}</a></p>
+        <p>Опубликовано {{ news.created }}</p>
+        <p>
+            {% if news.created != news.updated %}
+                Изменено: {{ news.updated }}
+            {% endif %}
+        </p>
+    </div>
+    {% include 'news/comments.html' with comments=comments comment_form=comment_form %}
 {% endblock %}

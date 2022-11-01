@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from news.models import News
+from news.models import News, Comment
 
 
 @admin.register(News)
@@ -40,19 +40,23 @@ class NewsAdmin(admin.ModelAdmin):
         obj.save()
 
 
+@admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
     fields = ('text',
               'author',
+              'news',
               'published',
               'created',
               'updated')
     readonly_fields = ('created',
                        'updated')
     list_display = ('author',
+                    'news',
                     'published',
                     'created',
                     'updated')
-    search_fields = ('author',)
+    search_fields = ('author',
+                     'news')
     list_filter = ('published',
                    'created',
                    'updated')

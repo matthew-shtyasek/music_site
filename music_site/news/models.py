@@ -22,11 +22,6 @@ class News(models.Model):
     likes = models.ManyToManyField(CustomUser,
                                    related_name='liked_news',
                                    verbose_name='Лайки')
-    comments = models.ForeignKey('Comment',
-                                 null=True,
-                                 related_name='news',
-                                 on_delete=models.CASCADE,
-                                 verbose_name='Комментарии')
     created = models.DateTimeField(auto_now_add=True,
                                    verbose_name='Создана')
     updated = models.DateTimeField(auto_now=True,
@@ -37,6 +32,9 @@ class News(models.Model):
     def get_absolute_uri(self):
         return reverse('news:news_detail', args=[self.slug])
 
+    def __str__(self):
+        return self.title
+
     class Meta:
         ordering = ('-created', '-updated')
         verbose_name = 'Новость'
@@ -45,7 +43,7 @@ class News(models.Model):
 
 class Comment(models.Model):
     text = models.TextField(blank=False,
-                            verbose_name='Текст')
+                            verbose_name='Текст комментария')
     author = models.ForeignKey(CustomUser,
                                on_delete=models.CASCADE,
                                blank=True,
@@ -61,6 +59,11 @@ class Comment(models.Model):
                                    verbose_name='Изменён')
     published = models.BooleanField(default=False,
                                     verbose_name='Опубликован')
+    news = models.ForeignKey(News,
+                             null=True,
+                             related_name='comments',
+                             on_delete=models.CASCADE,
+                             verbose_name='Новость')
 
     class Meta:
         ordering = ('-created',)

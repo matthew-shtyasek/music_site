@@ -1,0 +1,13 @@
+{% extends 'root.html' %}
+
+{% block title %}Создание новости{% endblock %}
+
+{% block content %}
+    <div class="d-flex w-75 mt-lg-5 justify-content-center align-items-center">
+    <form action="." method="post" class="form comment-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Отправить" />
+    </form>
+</div>
+{% endblock %}

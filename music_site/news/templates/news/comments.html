@@ -1,0 +1,26 @@
+{% load thumbnail %}
+
+<div class="d-flex w-75 mt-lg-5 justify-content-center align-items-center">
+    <form action="." method="post" class="form comment-form">
+        {% csrf_token %}
+        {{ comment_form.as_p }}
+        <input type="submit" value="Отправить" />
+    </form>
+</div>
+
+<div class="comments w-75 pt-4">
+    <h2 class="mb-4">Комментарии:</h2>
+    {% for comment in comments %}
+        <div class="comment mt-4 {% if forloop.counter|divisibleby:2 == 0 %}even{% else %}odd{% endif %}">
+            <div class="comment-title flex-row d-flex">
+                <a href="{{ comment.author.get_absolute_uri }}"><h4>{{ comment.author }}</h4></a>
+                <p class="float-right text-right w-100 mb-0">Опубликован: {{ comment.created }}</p>
+            </div>
+            <div class="comment-body">
+                <p>{{ comment.text }}</p>
+            </div>
+        </div>
+    {% empty %}
+        <h3>Комментариев нет, будь первым!</h3>
+    {% endfor %}
+</div>

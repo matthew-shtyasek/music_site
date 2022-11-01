@@ -32,6 +32,7 @@ class UserProfileView(DetailView):
             self.extra_context['public_playlists'] = public_playlists
             self.extra_context['private_playlists'] = private_playlists
             self.extra_context['recommended_songs'] = get_recommended_songs(request.user)
+            self.extra_context['current_page'] = 'profile'
             return super().get(request, pk)
 
 
@@ -39,6 +40,7 @@ class PlaylistCreateView(CreateView):
     form_class = PlaylistCreateForm
     model = Playlist
     template_name = 'profiles/playlists/create_playlist.html'
+    extra_context = {'current_page': 'profile'}
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
@@ -72,6 +74,7 @@ class PlaylistDetailView(DetailView):
     model = Playlist
     template_name = 'profiles/playlists/playlist_detail.html'
     context_object_name = 'playlist'
+    extra_context = {'current_page': 'profile'}
 
 
 @login_required
