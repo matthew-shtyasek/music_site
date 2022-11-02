@@ -3,7 +3,7 @@ function getFullUrl() {
 }
 
 function getUrlParts() {
-    return getFullUrl().split('?', 1);
+    return getFullUrl().split('?', 2);
 }
 
 function getUrlPath() {
@@ -23,7 +23,7 @@ function getUrlAsDict() {
     let input_get = getUrlGetAttributes();
 
     for (let i = 0; i < input_get.length; ++i) {
-        let input_get_kv = input_get.split('=');
+        let input_get_kv = input_get[i].split('=');
         result[ input_get_kv[0] ] = input_get_kv[1];
     }
 

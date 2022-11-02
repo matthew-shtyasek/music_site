@@ -14,7 +14,9 @@
         <div class="flex-row mt-lg-3">
             {% if news.image %}
                 {% thumbnail news.image '150x200' crop="center" as im %}
-                    <img src="{{ im.url }}" alt="Не удалось загрузить изображение" class="img-responsive float-left mr-3">
+                    <a href="{{ news.image.url }}">
+                        <img src="{{ im.url }}" alt="Не удалось загрузить изображение" class="img-responsive float-left mr-3">
+                    </a>
                 {% endthumbnail %}
             {% endif %}
             <div>

@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'profiles.apps.ProfilesConfig',
     'redis',
     'news.apps.NewsConfig',
-    'psycopg2',
+    'django.contrib.postgres',
 ]
 
 MIDDLEWARE = [

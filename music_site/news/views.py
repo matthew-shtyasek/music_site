@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.postgres.search import SearchVector, SearchQuery, TrigramSimilarity, SearchRank
 from django.http import Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -29,6 +30,20 @@ class NewsListView(ListView):
             if 'sort' in self.request.GET:
                 queryset = queryset.order_by(self.request.GET['sort'])
                 self.extra_context['current_sort'] = self.extra_context['sort_types'][self.request.GET['sort']]
+            if 'search' in self.request.GET and self.request.GET['search']:
+                vector = SearchVector('title', weight='A') + SearchVector('body', weight='B')
+                query = SearchQuery(self.request.GET['search'])
+                _queryset = queryset\
+                    .annotate(search=vector, rank=SearchRank(vector, query))\
+                    .filter(search=query)\
+                    .order_by('-rank')
+
+                query = self.request.GET['search'].replace('+', ' ')
+                trigram_similarity = TrigramSimilarity('title', query)
+                queryset = _queryset or queryset\
+                    .annotate(similarity=trigram_similarity)\
+                    .filter(similarity__gt=0.15)\
+                    .order_by('-similarity')
 
         return queryset
 
