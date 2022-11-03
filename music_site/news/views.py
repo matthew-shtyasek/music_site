@@ -1,7 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.postgres.search import SearchVector, SearchQuery, TrigramSimilarity, SearchRank
-from django.http import Http404
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.http import Http404, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -13,7 +14,9 @@ from news.models import News, Comment
 
 class NewsListView(ListView):
     model = News
+    context_object_name = 'news_list'
     template_name = 'news/news_list.html'
+    ajax_template_name = 'news/news_list_ajax.html'
     extra_context = {'current_page': 'news',
                      'current_sort': 'Времени публикации (от новых к старым)',
                      'sort_types': {'-created': 'Времени публикации (от новых к старым)',
@@ -44,8 +47,30 @@ class NewsListView(ListView):
                     .annotate(similarity=trigram_similarity)\
                     .filter(similarity__gt=0.15)\
                     .order_by('-similarity')
-
         return queryset
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        if not object_list:
+            return super().get_context_data(object_list=object_list, **kwargs)
+        context = {self.context_object_name: object_list}
+        context.update(self.extra_context)
+        return context
+
+    def get(self, request, *args, **kwargs):
+        news = News.objects.all()
+        paginator = Paginator(news, 25)
+        page = request.GET.get('page')
+
+        try:
+            news = paginator.page(page)
+        except PageNotAnInteger:
+            news = paginator.page(1)
+
+        if request.is_ajax():
+            if not news:
+                return JsonResponse('')
+            return render(request, self.ajax_template_name, self.get_context_data(object_list=news))
+        return render(request, self.template_name, self.get_context_data(object_list=news))
 
 
 class NewsDetailView(DetailView):

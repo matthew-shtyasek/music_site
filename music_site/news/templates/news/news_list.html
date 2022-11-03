@@ -5,6 +5,10 @@
     <link rel="stylesheet" href="{% static 'css/news.css' %}">
 {% endblock %}
 
+{% block js %}
+    <script src="{% static 'js/pagination_ajax.js' %}"></script>
+{% endblock %}
+
 {% block title %}Новости{% endblock %}
 
 
@@ -43,16 +47,15 @@
             </form>
         </div>
     </div>
-    <div class="news-block w-100 flex-column">
-        {% for news in news_list %}
-            {% include 'news/news_list_item.html' with news=news %}
-        {% endfor %}
+    <div id="ajax-paginated" class="news-block w-100 flex-column">
+        {% include 'news/news_list_ajax.html' %}
     </div>
 {% endblock %}
 
 {% block domready %}
     let string = decodeURIComponent(getUrlAsDict()['search']);
     $('.search').val(
-        string === undefined ? '' : string.replaceAll('+', ' ')
+        string === undefined || string === 'undefined' ? '' : string.replaceAll('+', ' ')
     );
+    ajaxPaginationInit();
 {% endblock %}

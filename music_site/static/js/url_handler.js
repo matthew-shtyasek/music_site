@@ -10,6 +10,10 @@ function getUrlPath() {
     return getUrlParts()[0];
 }
 
+function getUrlDomain() {
+    return getUrlPath().split('/', 4).slice(0, 3).join('/');
+}
+
 function getUrlGetAttributes() {
     try {
         return getUrlParts()[1].split('&');
