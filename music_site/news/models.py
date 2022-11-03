@@ -29,7 +29,7 @@ class News(models.Model):
     published = models.BooleanField(default=False,
                                     verbose_name='Опубликована')
 
-    def get_absolute_uri(self):
+    def get_absolute_url(self):
         return reverse('news:news_detail', args=[self.slug])
 
     def __str__(self):

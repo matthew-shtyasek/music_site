@@ -18,7 +18,10 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
+from news.feed import NewsFeed
+
 urlpatterns = [
+    path('feed/', NewsFeed(), name='feed'),
     path('news/', include('news.urls', namespace='news')),
     path('profile/', include('profiles.urls', namespace='profiles')),
     path('auth/', include('auth.urls', namespace='auth')),

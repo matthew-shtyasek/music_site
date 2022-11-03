@@ -172,3 +172,5 @@ PASSWORD_RESET_TIMEOUT_DAYS = 1
 AUTH_USER_MODEL = 'custom_auth.CustomUser'
 
 LOGIN_REDIRECT_URL = '/profile/'
+
+CURRENT_HOST = 'localhost:8000'

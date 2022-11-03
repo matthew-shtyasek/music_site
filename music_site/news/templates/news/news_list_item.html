@@ -1,5 +1,5 @@
 {% load thumbnail %}
-<a href="{{ news.get_absolute_uri }}" class="news-block-link">
+<a href="{{ news.get_absolute_url }}" class="news-block-link">
     <div class="news-block-item d-flex w-100 mb-1 mt-1 flex-row">
         <div class="d-block">
             {% thumbnail news.image '90x120' crop='center' as im %}
@@ -8,7 +8,7 @@
         </div>
         <div class="main-block ml-2">
             <h3>{{ news.title }}</h3>
-            <p class="mb-0">{{ news.body|truncatewords:"30" }}</p>
+            <p class="mb-0">{{ news.body|truncatewords:"40"|truncatechars:"340" }}</p>
         </div>
         <!--<div class="float-right d-flex flex-column w-100 text-right">
             <p>Опубликовано: {{ news.created }}</p>
