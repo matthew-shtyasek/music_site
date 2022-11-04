@@ -12,6 +12,8 @@ class CustomUserAdmin(ModelAdmin):
               'is_active',
               'is_staff',
               'is_superuser',
+              'groups',
+              'user_permissions',
               'last_login',
               'date_joined')
     list_display = ('username',
@@ -23,6 +25,7 @@ class CustomUserAdmin(ModelAdmin):
     list_filter = ('is_active',
                    'is_staff',
                    'is_superuser',
+                   'groups',
                    'last_login',
                    'date_joined')
     search_fields = ('username',

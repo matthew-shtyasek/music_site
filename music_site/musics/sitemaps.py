@@ -4,7 +4,7 @@ from musics.models import Song, Musician, MusicGroup
 
 
 class SongSitemap(Sitemap):
-    changefreq = 'daily'
+    changefreq = 'weekly'
     priority = 0.7
 
     def items(self):

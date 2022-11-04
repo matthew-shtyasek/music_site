@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.postgres.search import SearchVector, SearchQuery, TrigramSimilarity, SearchRank
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import Http404, JsonResponse
@@ -108,7 +108,7 @@ class NewsDetailView(DetailView):
         return super().get(request, *args, **kwargs)
 
 
-class NewsCreateView(CreateView):
+class NewsCreateView(PermissionRequiredMixin, CreateView):
     form_class = NewsForm
     model = News
     template_name = 'news/news_creation.html'

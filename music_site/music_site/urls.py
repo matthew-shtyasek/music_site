@@ -25,6 +25,7 @@ from news.feed import NewsFeed
 urlpatterns = [
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     path('feed/', NewsFeed(), name='feed'),
+    path('payments/', include('payments.urls', namespace='payments')),
     path('news/', include('news.urls', namespace='news')),
     path('profile/', include('profiles.urls', namespace='profiles')),
     path('auth/', include('auth.urls', namespace='auth')),
