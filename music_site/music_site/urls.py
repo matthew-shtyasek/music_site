@@ -16,11 +16,14 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.flatpages import sitemaps
+from django.contrib.sitemaps.views import sitemap
 from django.urls import path, include
 
 from news.feed import NewsFeed
 
 urlpatterns = [
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     path('feed/', NewsFeed(), name='feed'),
     path('news/', include('news.urls', namespace='news')),
     path('profile/', include('profiles.urls', namespace='profiles')),

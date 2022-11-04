@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'redis',
     'news.apps.NewsConfig',
     'django.contrib.postgres',
+    'django.contrib.sites',
+    'django.contrib.sitemaps',
 ]
 
 MIDDLEWARE = [

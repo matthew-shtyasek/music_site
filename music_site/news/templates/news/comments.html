@@ -13,7 +13,7 @@
     {% for comment in comments %}
         <div class="comment mt-4 {% if forloop.counter|divisibleby:2 == 0 %}even{% else %}odd{% endif %}">
             <div class="comment-title flex-row d-flex">
-                <a href="{{ comment.author.get_absolute_uri }}"><h4>{{ comment.author }}</h4></a>
+                <a href="{{ comment.author.get_absolute_url }}"><h4>{{ comment.author }}</h4></a>
                 <p class="float-right text-right w-100 mb-0">Опубликован: {{ comment.created }}</p>
             </div>
             <div class="comment-body">

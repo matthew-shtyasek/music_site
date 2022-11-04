@@ -54,7 +54,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.username
 
-    def get_absolute_uri(self):
+    def get_absolute_url(self):
         return reverse('profiles:profile', args=[self.pk])
 
     class Meta:

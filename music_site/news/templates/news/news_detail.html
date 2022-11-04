@@ -25,7 +25,7 @@
         </div>
     </div>
     <div class="publish-date w-100 text-right">
-        <p>Автор: <a href="{{ news.author.get_absolute_uri }}">{{ news.author }}</a></p>
+        <p>Автор: <a href="{{ news.author.get_absolute_url }}">{{ news.author }}</a></p>
         <p>Опубликовано {{ news.created }}</p>
         <p>
             {% if news.created != news.updated %}
