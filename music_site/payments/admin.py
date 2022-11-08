@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from payments.models import Discount, Promo, Premium, PremiumType
+from payments.models import Discount, Promo, Premium, PremiumType, Receipt
 
 
 @admin.register(Discount)
@@ -55,23 +55,39 @@ class PromoAdmin(admin.ModelAdmin):
 @admin.register(PremiumType)
 class PremiumTypeAdmin(admin.ModelAdmin):
     fields = ('type',
+              'level',
+              'public_playlists',
+              'private_playlists',
+              'songs_per_playlist',
               'created',
               'updated')
     list_display = ('type',
+                    'level',
+                    'public_playlists',
+                    'private_playlists',
+                    'songs_per_playlist',
                     'created',
                     'updated')
-    search_fields = ('type',)
-    list_filter = ('created',
+    list_editable = ('level',
+                     'public_playlists',
+                     'private_playlists',
+                     'songs_per_playlist')
+    search_fields = ('type',
+                     'public_playlists',
+                     'songs_per_playlist',
+                     'private_playlists')
+    list_filter = ('level',
+                   'created',
                    'updated')
     readonly_fields = ('created',
                        'updated')
-
 
 
 @admin.register(Premium)
 class PremiumAdmin(admin.ModelAdmin):
     fields = ('name',
               'type',
+              'description',
               'months',
               'discount',
               'price',
@@ -92,3 +108,34 @@ class PremiumAdmin(admin.ModelAdmin):
                      'price')
     readonly_fields = ('created',
                        'updated')
+
+
+@admin.register(Receipt)
+class ReceiptAdmin(admin.ModelAdmin):
+    fields = ('pk',
+              'premium',
+              'owner',
+              'discount',
+              'price',
+              'transaction_date',
+              'premium_end_date')
+    list_display = ('pk',
+                    'premium',
+                    'owner',
+                    'discount',
+                    'price',
+                    'transaction_date',
+                    'premium_end_date')
+    list_filter = ('transaction_date',
+                   'premium_end_date')
+    search_fields = ('pk',
+                     'premium',
+                     'owner',
+                     'discount',
+                     'price')
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False

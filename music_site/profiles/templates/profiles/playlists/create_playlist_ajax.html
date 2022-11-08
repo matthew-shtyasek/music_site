@@ -6,7 +6,18 @@
                 <label for="{{ field.auto_id }}" class="{{ field.label_class }} {% if forloop.counter != 1 %}mt-2{% endif %} mb-2">
                     {{ field.label }}
                 </label>
-                {{ field }}
+                {% if field.name == 'public' %}
+                    <input type="checkbox" name="public" id="id_public"
+                        {% if public_playlists_accept and private_playlists_accept %}
+                            checked
+                        {% elif public_playlists_accept %}
+                           checked disabled
+                        {% else %}
+                           disabled
+                        {% endif %}>
+                {% else %}
+                    {{ field }}
+                {% endif %}
             {% endfor %}
             <input type="submit" class="button mt-2 pt-1 pb-1 pl-2 pr-2 float-right" value="Создать">
         </form>

@@ -12,6 +12,7 @@ from auth.forms import SetPasswordForm
 from auth.models import CustomUser
 from auth.tasks import send_token_message
 from auth.token import user_tokenizer
+from payments.models import Receipt, Premium
 
 
 class LoginView(views.LoginView):
@@ -96,7 +97,15 @@ class SetPasswordView(View):
         if form.is_valid():
             cd = form.cleaned_data
             user.set_password(cd['new_password1'])
-            user.is_active = True
+
+            if not user.is_active:
+                user.is_active = True
+                receipt = Receipt()
+                receipt.premium = Premium.objects.get(pk=1)
+                receipt.owner = user
+                receipt.price = 0
+                receipt.save()
+
             user.save()
             return redirect(reverse('musics:main'))
         form_error_parser.parse(request, form)

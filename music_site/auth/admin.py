@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 
 from auth.models import CustomUser
+from payments.models import Receipt
 
 
 @admin.register(CustomUser)

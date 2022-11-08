@@ -89,6 +89,7 @@ $(document).ready(function () {
               });
 
               $('.create-playlist').submit(function () {
+                is_dropdown_clicked = false;
                 $.post({
                   url: '/profile/create_playlist/',
                   data: $(this).serialize(),
@@ -107,6 +108,7 @@ $(document).ready(function () {
         }
       });
     } else {
+      is_dropdown_clicked = false;
       $.get({
         url: `/profile/add_song/${current_song}/${playlist_id}/`,
       });

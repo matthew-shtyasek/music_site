@@ -1,14 +1,17 @@
 import redis
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.utils import timezone
 from django.views.generic import DetailView, CreateView
 
 from auth.models import CustomUser
 from musics.forms import PlaylistCreateForm
 from musics.models import Song
+from payments.models import Receipt
 from profiles.models import Playlist
 from profiles.recommender import get_recommended_songs
 
@@ -36,11 +39,33 @@ class UserProfileView(DetailView):
             return super().get(request, pk)
 
 
-class PlaylistCreateView(CreateView):
+class PlaylistCreateView(PermissionRequiredMixin, CreateView):
     form_class = PlaylistCreateForm
     model = Playlist
     template_name = 'profiles/playlists/create_playlist.html'
+    private_playlists_accept = False
+    public_playlists_accept = False
     extra_context = {'current_page': 'profile'}
+
+    def has_permission(self):
+        receipts = Receipt.objects.filter(owner=self.request.user,
+                                          transaction_date__lte=timezone.now(),
+                                          premium_end_date__gte=timezone.now())
+        receipts = receipts or Receipt.objects.filter(premium__price=0)
+        receipts = receipts.order_by('-premium__type__level')
+
+        premium_type = receipts[0].premium.type
+        public_playlists = premium_type.public_playlists
+        private_playlists = premium_type.private_playlists
+        user_playlists = Playlist.objects.filter(owner=self.request.user)
+        user_playlists_pub = user_playlists.filter(public=True)
+        user_playlists_priv = user_playlists.filter(public=False)
+
+        self.private_playlists_accept = len(user_playlists_priv) < private_playlists
+        self.public_playlists_accept = len(user_playlists_pub) < public_playlists
+
+        return self.request.user.has_perm('playlist.add_playlist') and \
+               (self.private_playlists_accept or self.public_playlists_accept)
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
@@ -61,6 +86,9 @@ class PlaylistCreateView(CreateView):
         return redirect(self.get_success_url())
 
     def get(self, request):
+        self.extra_context['private_playlists_accept'] = self.private_playlists_accept
+        self.extra_context['public_playlists_accept'] = self.public_playlists_accept
+
         if not request.user.is_authenticated:
             return redirect(reverse('auth:login'), kwargs={'next': f'{request.build_absolute_uri()}'})
         if request.is_ajax():
