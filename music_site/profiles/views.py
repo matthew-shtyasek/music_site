@@ -24,11 +24,16 @@ class UserProfileView(DetailView):
     template_name = 'profiles/user_profile.html'
     extra_context = dict()
 
+    def get_context_data(self, **kwargs):
+        context = dict()
+        context['current_user'] = self.request.user
+        context.update(self.extra_context)
+        return context
+
     def get(self, request, pk=0):
         self.extra_context = dict()
         if pk == 0:
-            context = {'current_user': request.user}
-            return render(request, self.template_name, context)
+            return render(request, self.template_name, self.get_context_data())
         else:
             public_playlists = Playlist.objects.filter(owner_id=pk, public=True)
             private_playlists = request.user.playlists.filter(owner_id=pk, public=False)
@@ -48,13 +53,7 @@ class PlaylistCreateView(PermissionRequiredMixin, CreateView):
     extra_context = {'current_page': 'profile'}
 
     def has_permission(self):
-        receipts = Receipt.objects.filter(owner=self.request.user,
-                                          transaction_date__lte=timezone.now(),
-                                          premium_end_date__gte=timezone.now())
-        receipts = receipts or Receipt.objects.filter(premium__price=0)
-        receipts = receipts.order_by('-premium__type__level')
-
-        premium_type = receipts[0].premium.type
+        premium_type = self.request.user.current_premium.type
         public_playlists = premium_type.public_playlists
         private_playlists = premium_type.private_playlists
         user_playlists = Playlist.objects.filter(owner=self.request.user)

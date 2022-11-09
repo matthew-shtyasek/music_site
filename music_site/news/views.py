@@ -83,7 +83,7 @@ class NewsDetailView(DetailView):
     def get(self, request, *args, **kwargs):
         self.extra_context = dict()
         self.extra_context['comments'] = Comment.objects.filter(published=True,
-                                                                news=self.get_queryset()[0])
+                                                                news=self.get_queryset().get(slug=kwargs['slug']))
         self.extra_context['comment_form'] = CommentForm()
         self.extra_context['current_page'] = 'news'
         return super().get(request, *args, **kwargs)

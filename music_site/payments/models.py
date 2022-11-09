@@ -5,7 +5,6 @@ from django.db import models
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 
-from auth.models import CustomUser
 from music_site.celery import app
 from payments.tasks import remove_discount
 
@@ -146,7 +145,7 @@ class Receipt(models.Model):
                                 on_delete=models.DO_NOTHING,
                                 related_name='receipts',
                                 verbose_name='Премиум')
-    owner = models.ForeignKey(CustomUser,
+    owner = models.ForeignKey('custom_auth.CustomUser',
                               on_delete=models.DO_NOTHING,
                               related_name='receipts',
                               verbose_name='Покупатель')

@@ -5,7 +5,7 @@
 {% block content %}
     <div class="d-flex flex-row w-100">
         {% for premium in premiums %}
-            <div class="d-flex flex-column p-4" style="width: 300px; border: 2px gray solid; border-radius: 4px;">
+            <div class="d-flex flex-column p-4 m-2" style="width: 300px; height: 380px; border: 2px gray solid; border-radius: 4px;">
                 <h4 class="d-flex w-100 text-center">{{ premium.name }}</h4>
                 <p>Тип: <a href="#">{{ premium.type.type }}</a></p>
                 <p>Описание: {{ premium.description|truncatechars:"350" }}</p>
@@ -14,7 +14,9 @@
                     <p>Скидка: {{ premium.discount }}</p>
                 {% endif %}
                 <p>Стоимость: {{ premium.get_result_price }}</p>
-                <input type="button" value="Приобрести">
+                <div class="w-100 h-100 d-flex align-items-end">
+                    <input type="button" value="Приобрести" class="w-100">
+                </div>
             </div>
         {% endfor %}
     </div>

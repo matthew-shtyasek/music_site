@@ -3,6 +3,9 @@ from django.utils import timezone
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
+from django.utils import timezone
+
+from payments.models import Premium, PremiumType
 
 
 class CustomUserManager(BaseUserManager):
@@ -53,6 +56,15 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
+
+    @property
+    def current_premium(self):
+        receipts = self.receipts.filter(transaction_date__lte=timezone.now(),
+                                        premium_end_date__gt=timezone.now())\
+                   or self.receipts.filter(discount=0)
+        current_premium = Premium.objects.filter(receipts__in=receipts)\
+                                         .order_by('-type__level')[0]
+        return current_premium
 
     def get_absolute_url(self):
         return reverse('profiles:profile', args=[self.pk])
