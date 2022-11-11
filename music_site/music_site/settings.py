@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+import sys
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -28,7 +28,9 @@ SECRET_KEY = 'django-insecure-3$((tigmnllh7k%)npo+sa(**^ny&g&cr*i9!m54ycq-ff=q(q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['mysite.com',
+                 'localhost',
+                 '127.0.0.1']
 
 
 # Application definition
@@ -174,6 +176,17 @@ PASSWORD_RESET_TIMEOUT_DAYS = 1
 
 AUTH_USER_MODEL = 'custom_auth.CustomUser'
 
+LOGIN_URL = '/auth/login/'
 LOGIN_REDIRECT_URL = '/profile/'
 
 CURRENT_HOST = 'localhost:8000'
+
+if len(sys.argv) >= 2 and sys.argv[1] == 'runserver':
+    BRAINTREE_PRODUCTION = False
+else:
+    BRAINTREE_PRODUCTION = True
+
+BRAINTREE_MERCHANT_ID = '82shr2z3n5pvspv7'
+BRAINTREE_MERCHANT_ACCOUNT_ID = 'mycompany_ru'
+BRAINTREE_PUBLIC_KEY = 'xwny5vkfn63mnqgf'
+BRAINTREE_PRIVATE_KEY = 'e07da772c4184476b9c9bc613476239d'
