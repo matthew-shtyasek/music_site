@@ -1,3 +1,4 @@
+import redis
 from celery import shared_task
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -28,3 +29,12 @@ def send_token_message(user_id, absolute_uri):
                              recipient_list=[user.email],
                              html_message=html_message)
     return email_status
+
+
+@shared_task
+def clustering_users():
+    r = redis.StrictRedis('localhost')
+    user_keys = r.keys('user:playlists:[0-9]*')
+    user_ids = list(map(lambda string: int(string.split(':')[-1]), user_keys))
+    
+

@@ -33,7 +33,7 @@ class LoginView(views.LoginView):
 
     def form_invalid(self, form):
         messages.add_message(self.request, messages.ERROR, 'Логин или пароль введены неверно!')
-        messages.add_message(self.request, messages.INFO, f'<a href="#" class="forgot-password">Забыли пароль?</a>')
+        messages.add_message(self.request, messages.INFO, f'<a href="{reverse("auth:set_password")}" class="forgot-password">Забыли пароль?</a>')
         return super().form_invalid(form)
 
 
