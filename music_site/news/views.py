@@ -57,7 +57,7 @@ class NewsListView(ListView):
         return context
 
     def get(self, request, *args, **kwargs):
-        news = News.objects.all()
+        news = self.get_queryset()
         paginator = Paginator(news, 25)
         page = request.GET.get('page')
 

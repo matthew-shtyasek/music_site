@@ -7,7 +7,8 @@ from payments.models import Receipt
 
 @admin.register(CustomUser)
 class CustomUserAdmin(ModelAdmin):
-    fields = ('username',
+    fields = ('pk',
+              'username',
               'email',
               'password',
               'is_active',
@@ -34,3 +35,4 @@ class CustomUserAdmin(ModelAdmin):
     list_editable = ('is_active',
                      'is_staff',
                      'is_superuser')
+    readonly_fields = ('pk',)
