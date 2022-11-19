@@ -261,7 +261,8 @@ def get_similar_user_pks(pk):
 def get_all_user_pks():
     with connection.cursor() as cursor:
         cursor.execute('''SELECT id FROM custom_auth_customuser''')
-    return columns_to_list(cursor.fetchall())[0]
+        result = columns_to_list(cursor.fetchall())[0]
+    return result
 
 
 def prepare_clustering(users_pk):
