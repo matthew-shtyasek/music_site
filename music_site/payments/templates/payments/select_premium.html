@@ -15,7 +15,7 @@
                 {% endif %}
                 <p>Стоимость: {{ premium.get_result_price }}</p>
                 <div class="w-100 h-100 d-flex align-items-end">
-                    <input type="button" value="Приобрести" class="w-100">
+                    <a class="button btn btn-success w-100" href="{% url 'payments:pay' premium_pk=premium.pk %}">Приобрести</a>
                 </div>
             </div>
         {% endfor %}

@@ -15,7 +15,7 @@ from payments.models import Premium, Receipt
 class SelectPremiumView(ListView):
     model = Premium
     context_object_name = 'premiums'
-    template_name = 'payments/select_premium.html'  # todo: redirect to payment page
+    template_name = 'payments/select_premium.html'
 
 
 class PaymentsView(LoginRequiredMixin, View):
