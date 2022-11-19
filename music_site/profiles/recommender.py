@@ -8,6 +8,9 @@ r = redis.StrictRedis('localhost')
 
 def get_recommended_songs(user, max_songs=-1):
     _song_ids = r.sinter(f'user:playlists:{user.id}')
+    if not _song_ids:
+        return []
+
     song_ids = list(map(lambda string: f'{string.decode("utf-8")}:z', _song_ids))
     tempkey = ''.join(song_ids)
     r.zunionstore(tempkey, song_ids)

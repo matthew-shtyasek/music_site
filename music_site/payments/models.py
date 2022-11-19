@@ -152,6 +152,7 @@ class Receipt(models.Model):
     discount = models.ForeignKey(Discount,
                                  on_delete=models.SET_NULL,
                                  null=True,
+                                 blank=True,
                                  default=None,
                                  related_name='receipts',
                                  verbose_name='Скидка')

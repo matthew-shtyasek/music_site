@@ -1,5 +1,6 @@
 from django.contrib.auth import views, logout
 from django.contrib import messages
+from django.contrib.auth.models import Permission
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.http import JsonResponse
@@ -105,7 +106,9 @@ class SetPasswordView(View):
                 receipt.owner = user
                 receipt.price = 0
                 receipt.save()
-
+                perm = Permission.objects.get(name='playlist.add_playlist')
+                perm.user_set.add(user)
+                perm.save()
             user.save()
             return redirect(reverse('musics:main'))
         form_error_parser.parse(request, form)

@@ -61,7 +61,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def current_premium(self):
         receipts = self.receipts.filter(transaction_date__lte=timezone.now(),
                                         premium_end_date__gt=timezone.now())\
-                   or self.receipts.filter(discount=0)
+                   or self.receipts.filter(premium__type__level=0)
         current_premium = Premium.objects.filter(receipts__in=receipts)\
                                          .order_by('-type__level')[0]
         return current_premium

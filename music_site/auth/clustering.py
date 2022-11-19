@@ -264,7 +264,10 @@ def count_equals_elements(lst):
 
 
 def get_similar_user_pks(pk):
-    user_dict = prepare_clustering([pk])[pk]
+    try:
+        user_dict = prepare_clustering([pk])[pk]
+    except KeyError:
+        return []
     c = Clustering(load=True, fields=['s', 'g', 'y'])
     result = c.get_similar_user_pks(user_dict)
     result.remove(pk)
@@ -288,18 +291,13 @@ def prepare_clustering(users_pk):
 
         for user_pk in users_pk:
             try:
-                cursor.execute('''SELECT s.id, a.genre_id, cast(date_part('year', s.written) as int)
+                cursor.execute('''SELECT DISTINCT s.id, a.genre_id, cast(date_part('year', s.written) as int)
                                 - MOD(cast(date_part('year', s.written) as int), 10)
-                                FROM musics_song as s INNER JOIN musics_album as a
-                              ON s.album_id = a.id
-                                WHERE s.id IN
-                              (SELECT DISTINCT song_id
-                                FROM profiles_playlist_songs
-                                WHERE playlist_id IN
-                              (SELECT id
-                                FROM profiles_playlist
-                                WHERE owner_id=%s))''',
-                               str(user_pk))
+                                FROM musics_song as s INNER JOIN musics_album as a ON s.album_id = a.id
+                                INNER JOIN profiles_playlist_songs as pps ON s.id = pps.song_id
+                                INNER JOIN profiles_playlist as pp ON pps.playlist_id = pp.id
+                                WHERE pp.owner_id=%s''',
+                               [str(user_pk)])
             except TypeError:
                 continue
             try:

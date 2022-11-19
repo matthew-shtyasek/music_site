@@ -45,7 +45,7 @@ class UserProfileView(DetailView):
         self.extra_context['recommended_songs'] = get_recommended_songs(request.user)
         self.extra_context['current_page'] = 'profile'
 
-        if pk == 0:
+        if pk == 0 or pk == request.user.pk:
             return render(request, self.template_name, self.get_context_data())
         return super().get(request, pk)
 
