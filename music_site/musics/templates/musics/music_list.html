@@ -1,9 +1,61 @@
 {% load static %}
+
+<script>
+
+    let waveSurfer = WaveSurfer.create({
+        container: '#waveform',
+    })
+    let play = false;
+    let audio_elem;
+    let play_btn;
+    let pause_btn;
+    let next_btn;
+    let prev_btn;
+
+    $(document).ready(function () {
+
+        audio_elem = $('#audio');
+        play_btn = $('.play');
+        pause_btn = $('.pause');
+        next_btn = $('.next');
+        prev_btn = $('.prev');
+
+        play_btn.click(function () {
+        });
+
+        pause_btn.click(function () {
+            if (!play)
+                return false;
+            play = !play;
+        });
+    });
+
+    function playSong(src) {
+        if (play)
+            audio_elem.stop();
+        audio_elem.src = src;
+        audio_elem.currentTime = 0;
+        audio_elem.play();
+        play = true;
+    }
+
+    function switchTrack(pk) {
+        $.get({
+            url: `{% url 'musics:get_song_ajax' %}`,
+            data: {pk: pk},
+            success: function (data) {
+                playSong(data);
+            },
+        });
+    }
+</script>
+
 {% block extracss %}
     <link rel="stylesheet" href="{% static 'css/music_list.css' %}">
 {% endblock %}
 
 {% block extrajs %}
+
     <script src="{% static 'js/music_list.js' %}"></script>
 {% endblock %}
 
@@ -14,6 +66,7 @@
 {% include 'dropdown/playlists_dropdown.html' %}
 
 <div class="interactive-player">
+    <audio id="audio" src="#" hidden></audio>
     <div class="controls">
         <div class="audio-track">
             <div class="time"></div>

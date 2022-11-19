@@ -32,15 +32,17 @@
 
         </div>
         <div class="song-detail align-self-center overflow-auto">
-            {% with img=song.album.image %}
-                {% if img %}
-                    {% thumbnail img '50x50' crop='center' as im  %}
-                        <img class="album-image" src="{{ im.url }}" alt="{{ song.name }}">
-                    {% endthumbnail %}
-                {% else %}
-                    <img class="album-image" src="{% static 'img/default_icon.jpg' %}" alt="{{ song.name }}">
-                {% endif %}
-            {% endwith %}
+            <a href="#" id="song-{{ song.pk }}" onclick="return switchTrack({{ song.pk }});">
+                {% with img=song.album.image %}
+                    {% if img %}
+                        {% thumbnail img '50x50' crop='center' as im  %}
+                            <img class="album-image" src="{{ im.url }}" alt="{{ song.name }}">
+                        {% endthumbnail %}
+                    {% else %}
+                        <img class="album-image" src="{% static 'img/default_icon.jpg' %}" alt="{{ song.name }}">
+                    {% endif %}
+                {% endwith %}
+            </a>
             <a href="{{ song.get_absolute_url }}">{{ song.name }}</a>
             <a href="{{ song.album.artist.get_absolute_url }}">({{ song.album.artist }})</a>
             {% if not off_add_button %}

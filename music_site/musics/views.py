@@ -1,3 +1,4 @@
+from Lib import os
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
@@ -94,3 +95,15 @@ class ArtistView(View):
             'songs': songs,
         }
         return render(request, template_name=template_name, context=context)
+
+
+def song_url_ajax_view(request):
+    if not request.is_ajax():
+        raise PermissionError('Request must be ajax')
+    fname = Song.objects.get(pk=request.GET['pk']).track.path
+    f = open(fname, "rb")
+    response = HttpResponse()
+    response.write(f.read())
+    response['Content-Type'] = 'audio/mp3'
+    response['Content-Length'] = os.path.getsize(fname)
+    return response
