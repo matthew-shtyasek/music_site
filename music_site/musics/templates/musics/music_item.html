@@ -32,7 +32,7 @@
 
         </div>
         <div class="song-detail align-self-center overflow-auto">
-            <a href="#" id="song-{{ song.pk }}" onclick="return switchTrack({{ song.pk }});">
+            <a href="#" class="song-link" id="song-{{ song.pk }}" onclick="return switchTrack({{ song.pk }});">
                 {% with img=song.album.image %}
                     {% if img %}
                         {% thumbnail img '50x50' crop='center' as im  %}

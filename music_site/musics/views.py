@@ -100,10 +100,11 @@ class ArtistView(View):
 def song_url_ajax_view(request):
     if not request.is_ajax():
         raise PermissionError('Request must be ajax')
-    fname = Song.objects.get(pk=request.GET['pk']).track.path
+    '''fname = Song.objects.get(pk=request.GET['pk']).track.path
     f = open(fname, "rb")
     response = HttpResponse()
     response.write(f.read())
     response['Content-Type'] = 'audio/mp3'
     response['Content-Length'] = os.path.getsize(fname)
-    return response
+    return response'''
+    return JsonResponse({'song_url': Song.objects.get(pk=request.GET['pk']).track.url })
