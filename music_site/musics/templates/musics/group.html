@@ -1,10 +1,28 @@
 {% extends 'root.html' %}
+{% load static %}
 {% load thumbnail %}
 
 {% block title %}Группа «{{ artist }}»{% endblock %}
 
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/music_list.css' %}">
+    <style>
+        td {
+            border: solid 1px gray;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+    </style>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/music_list.js' %}"></script>
+{% endblock %}
+
 {% block content %}
-    <div class="artist">
+    <div class="artist w-75 d-flex justify-content-center align-items-center flex-column">
         <h4>Группа «{{ artist }}»</h4>
         {% if artist.photo %}
             {% thumbnail artist.photo '300' as photo %}
@@ -12,27 +30,31 @@
             {% endthumbnail %}
         {% endif %}
 
-        <table class="artists border-0">
-            {% for musician in artist.musicians.all %}
-                <tr>
-                    <td class="pl-1 pr-2">
-                        <a href="{{ musician.get_absolute_url }}">{{ musician.name }}</a>
-                    </td>
-                    <td class="pl-1 pr-2">
-                        {% if musician.photo %}
-                            {% thumbnail musician.photo '100' as photo %}
-                                <a href="{{ musician.photo.url }}">
-                                    <img src="{{ photo.url }}" alt="Фотография не найдена">
-                                </a>
-                            {% endthumbnail %}
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
+        <table class="artists d-flex w-75 mt-2">
+            <tbody class="w-100 flex-column">
+                {% for musician in artist.musicians.all %}
+                    <tr class="d-flex w-100">
+                        <td class="pl-1 pr-2 d-flex w-75 align-items-center">
+                            <a href="{{ musician.get_absolute_url }}">{{ musician.name }}</a>
+                        </td>
+                        <td class="pl-1 pr-2 w-25 d-flex justify-content-center align-items-center">
+                            {% if musician.photo %}
+                                {% thumbnail musician.photo '100' as photo %}
+                                    <a href="{{ musician.photo.url }}">
+                                        <img src="{{ photo.url }}" alt="Фотография не найдена">
+                                    </a>
+                                {% endthumbnail %}
+                            {% else %}
+                                <p>Фотография не найдена</p>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
         </table>
 
-        <h5>Композиции:</h5>
-        {% include 'musics/music_list_wd.html' with songs=songs %}
+        <h5 class="mt-4">Композиции:</h5>
+        {% include 'musics/music_list.html' with songs=songs %}
     </div>
 {% endblock %}
 
