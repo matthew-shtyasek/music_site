@@ -73,14 +73,23 @@ class Clustering:
         self.clusters = list()
 
         if load:
+            with connection.cursor() as cursor:
+                cursor.execute('SELECT id FROM musics_song')
+                songs = columns_to_list(cursor.fetchall())[0]
+
             r = redis.StrictRedis()
             _keys = r.keys('center_cluster_*')
             keys = list(map(lambda key: int(str(key, encoding='utf-8').rsplit('_', maxsplit=1)[-1]), _keys))
             for key in sorted(keys):
                 _center = r.get(f'center_cluster_{key}')
-                self.centers.append(pickle.loads(_center))
                 _cluster = r.sinter(f'cluster_{key}')
-                self.clusters.append(list(map(int, _cluster)))
+                center = pickle.loads(_center)
+                cluster = list(map(int, _cluster))
+
+                center['s'] = {key: center['s'][key] if key in center['s'] else 0 for key in songs}
+
+                self.centers.append(center)
+                self.clusters.append(cluster)
 
         if weights:
             self.weights = weights
