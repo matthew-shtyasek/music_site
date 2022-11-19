@@ -8,7 +8,7 @@
 {% block title %}Профиль пользователя{% endblock %}
 
 {% block content %}
-    <div class="w-75">
+    <div class="w-75" style="font-size: 1.1em;">
         <h4>Основная информация</h4>
         <p>Логин: {{ current_user.username }}</p>
         <p>
@@ -30,5 +30,18 @@
         {% endif %}
 
         {% include 'profiles/recommendations/recommendations.html' with songs=recommended_songs %}
+
+        <h3>Похожие пользователи:</h3>
+        <div class="similar-users w-100 d-flex justify-content-center align-items-center">
+            {% for user in similar_users %}
+                <a href="{% url 'profiles:profile' user.pk %}" class="w-75">
+                    <div class="song w-100">
+                        {{ user }}
+                    </div>
+                </a>
+            {% empty %}
+                <p>Нет пользователей, которые похожи на вас</p>
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}

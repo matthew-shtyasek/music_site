@@ -8,6 +8,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import DetailView, CreateView
 
+from auth.clustering import get_similar_user_pks
 from auth.models import CustomUser
 from musics.forms import PlaylistCreateForm
 from musics.models import Song
@@ -32,16 +33,21 @@ class UserProfileView(DetailView):
 
     def get(self, request, pk=0):
         self.extra_context = dict()
+
+        if pk == 0 or pk == request.user.pk:
+            self.extra_context['public_playlists'] = Playlist.objects.filter(owner_id=request.user.pk, public=True)
+            self.extra_context['private_playlists'] = request.user.playlists.filter(owner_id=request.user.pk, public=False)
+            self.extra_context['similar_users'] = CustomUser.objects.filter(pk__in=get_similar_user_pks(request.user.pk))
+        else:
+            self.extra_context['public_playlists'] = Playlist.objects.filter(owner_id=pk, public=True)
+            self.extra_context['private_playlists'] = request.user.playlists.filter(owner_id=pk, public=False)
+
+        self.extra_context['recommended_songs'] = get_recommended_songs(request.user)
+        self.extra_context['current_page'] = 'profile'
+
         if pk == 0:
             return render(request, self.template_name, self.get_context_data())
-        else:
-            public_playlists = Playlist.objects.filter(owner_id=pk, public=True)
-            private_playlists = request.user.playlists.filter(owner_id=pk, public=False)
-            self.extra_context['public_playlists'] = public_playlists
-            self.extra_context['private_playlists'] = private_playlists
-            self.extra_context['recommended_songs'] = get_recommended_songs(request.user)
-            self.extra_context['current_page'] = 'profile'
-            return super().get(request, pk)
+        return super().get(request, pk)
 
 
 class PlaylistCreateView(PermissionRequiredMixin, CreateView):

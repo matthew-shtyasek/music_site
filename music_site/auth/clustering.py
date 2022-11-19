@@ -253,7 +253,9 @@ def count_equals_elements(lst):
 def get_similar_user_pks(pk):
     user_dict = prepare_clustering([pk])[pk]
     c = Clustering(load=True, fields=['s', 'g', 'y'])
-    return c.get_similar_user_pks(user_dict)
+    result = c.get_similar_user_pks(user_dict)
+    result.remove(pk)
+    return result
 
 
 def get_all_user_pks():
