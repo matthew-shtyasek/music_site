@@ -74,8 +74,10 @@ class Clustering:
 
         if load:
             with connection.cursor() as cursor:
-                cursor.execute('SELECT id FROM musics_song')
-                songs = columns_to_list(cursor.fetchall())[0]
+                cursor.execute('''SELECT s.id, a.genre_id, cast(date_part('year', s.written) as int) - MOD(cast(date_part('year', s.written) as int), 10)
+                                    FROM musics_song as s INNER JOIN musics_album as a
+                                    ON s.album_id = a.id''')
+                all_songs, all_genres, all_years = columns_to_list(cursor.fetchall())
 
             r = redis.StrictRedis()
             _keys = r.keys('center_cluster_*')
@@ -86,7 +88,9 @@ class Clustering:
                 center = pickle.loads(_center)
                 cluster = list(map(int, _cluster))
 
-                center['s'] = {key: center['s'][key] if key in center['s'] else 0 for key in songs}
+                center['s'] = {key: center['s'][key] if key in center['s'] else 0.0 for key in all_songs}
+                center['g'] = {key: center['g'][key] if key in center['g'] else 0.0 for key in all_genres}
+                center['y'] = {key: center['y'][key] if key in center['y'] else 0.0 for key in all_years}
 
                 self.centers.append(center)
                 self.clusters.append(cluster)
