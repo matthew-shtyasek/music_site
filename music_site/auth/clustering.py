@@ -63,7 +63,7 @@ class NormalizedVector(Vector):
 
 
 class Clustering:
-    def __init__(self, prepared_dict, fields, weights=None):
+    def __init__(self, prepared_dict=None, fields=None, weights=None, load=False):
         if weights and len(weights) != len(fields):
             raise IndexError('fields и weights не совпадают по размерам!')
 
@@ -71,6 +71,17 @@ class Clustering:
         self.fields = fields
         self.centers = list()
         self.clusters = list()
+
+        if load:
+            r = redis.StrictRedis()
+            _keys = r.keys('center_cluster_*')
+            keys = list(map(lambda key: int(str(key, encoding='utf-8').rsplit('_', maxsplit=1)[-1]), _keys))
+            for key in sorted(keys):
+                _center = r.get(f'center_cluster_{key}')
+                self.centers.append(pickle.loads(_center))
+                _cluster = r.sinter(f'cluster_{key}')
+                self.clusters.append(list(map(int, _cluster)))
+
         if weights:
             self.weights = weights
         else:
@@ -114,6 +125,16 @@ class Clustering:
             raise IndexError('Количество кластеров не равно количеству центров кластеров!')
         for index, cluster in zip(range(len(self.centers)), self.clusters):
             self.centers[index] = self.get_mean_inner_dicts(cluster)
+
+    def get_similar_user_pks(self, user_dict):
+        minimum_distance = self.get_absolute_distance(self.centers[0], user_dict)
+        result = self.clusters[0]
+        for index, center in zip(range(len(self.centers)), self.centers):
+            temp_distance = self.get_absolute_distance(center, user_dict)
+            if temp_distance < minimum_distance:
+                minimum_distance = temp_distance
+                result = self.clusters[index]
+        return result
 
     def get_dimension_distance(self, obj1, obj2, field):
         vector1 = NormalizedVector(obj1[field])
@@ -229,6 +250,12 @@ def count_equals_elements(lst):
     return result
 
 
+def get_similar_user_pks(pk):
+    user_dict = prepare_clustering([pk])[pk]
+    c = Clustering(load=True, fields=['s', 'g', 'y'])
+    return c.get_similar_user_pks(user_dict)
+
+
 def get_all_user_pks():
     with connection.cursor() as cursor:
         cursor.execute('''SELECT id FROM custom_auth_customuser''')
@@ -245,7 +272,8 @@ def prepare_clustering(users_pk):
 
         for user_pk in users_pk:
             try:
-                cursor.execute('''SELECT s.id, a.genre_id, cast(date_part('year', s.written) as int) - MOD(cast(date_part('year', s.written) as int), 10)
+                cursor.execute('''SELECT s.id, a.genre_id, cast(date_part('year', s.written) as int)
+                                - MOD(cast(date_part('year', s.written) as int), 10)
                                 FROM musics_song as s INNER JOIN musics_album as a
                               ON s.album_id = a.id
                                 WHERE s.id IN
