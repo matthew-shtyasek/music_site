@@ -1,0 +1,73 @@
+{% extends 'root.html' %}
+
+{% block js %}
+    <script src="https://js.braintreegateway.com/web/dropin/1.18.0/js/dropin.min.js"></script>
+{% endblock %}
+
+{% block title %}Покупка абонемента «{{ premium }}»{% endblock %}
+
+{% block content %}
+    <form action=".">
+        {% if braintree_error %}
+            <div class="alert alert-danger fade in">
+                <button class="close" data-dismiss="alert">&times;</button>
+                {{ braintree_error|safe }}
+            </div>
+        {% endif %}
+        <div class="braintree-notifications"></div>
+        <div id="braintree-dropin"></div>
+        <input style="background-color: #0783ca" id="submit-button" class="btn btn-success btn-lg btn-block" type="button" value="Оплатить">
+    </form>
+{% endblock %}
+
+{% block domready %}
+    let braintree_client_token = '{{ braintree_client_token }}';
+    let button = $('#submit-button');
+
+    braintree.dropin.create({
+        authorization: braintree_client_token,
+        container: '#braintree-dropin',
+        card: {
+            cardholderName: {
+                required: false,
+            },
+        },
+    }, function (createErr, instance) {
+        button.click(function() {
+            button.remove();
+            instance.requestPaymentMethod(function (err, payload) {
+                $.post({
+                    url: '{% url "payments:pay" premium_pk=premium.pk %}',
+                    data: {
+                        'payment_method_nonce': payload.nonce,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    }
+                }).done(function (result) {
+                    $.post({
+                        url: '{% url "payments:pay" premium_pk=premium.pk %}',
+                        data: {
+                            'done': true,
+                            'csrfmiddlewaretoken': '{{ csrf_token }}',
+                        }
+                    });
+                    setTimeout(function() {
+                        window.location.assign(getUrlDomain() + '{% url "musics:main" %}');
+                    }, 1000);
+                    //location.reload(false);
+                }).fail(function(result) {
+                    $.post({
+                        url: '{% url "payments:pay" premium_pk=premium.pk %}',
+                        data: {
+                            'done': false,
+                            'csrfmiddlewaretoken': '{{ csrf_token }}',
+                        }
+                    });
+                    setTimeout(function() {
+                        window.location.assign(getUrlDomain() + '{% url "payments:pay" premium_pk=premium.pk %}');
+                    }, 1000);
+                    //location.reload(false);
+                });
+            });
+        });
+    });
+{% endblock %}

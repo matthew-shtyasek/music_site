@@ -13,9 +13,26 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.contrib.flatpages import sitemaps
+from django.contrib.sitemaps.views import sitemap
+from django.urls import path, include
+
+from news.feed import NewsFeed
 
 urlpatterns = [
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+    path('feed/', NewsFeed(), name='feed'),
+    path('payments/', include('payments.urls', namespace='payments')),
+    path('news/', include('news.urls', namespace='news')),
+    path('profile/', include('profiles.urls', namespace='profiles')),
+    path('auth/', include('auth.urls', namespace='auth')),
     path('admin/', admin.site.urls),
+    path('', include('musics.urls', namespace='musics'))
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)

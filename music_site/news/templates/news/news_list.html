@@ -1,0 +1,61 @@
+{% extends 'root.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/news.css' %}">
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/pagination_ajax.js' %}"></script>
+{% endblock %}
+
+{% block title %}Новости{% endblock %}
+
+
+{% block content %}
+    <div class="search-block w-100">
+        <div class="sorting-by d-flex justify-content-center align-items-center float-left flex-row">
+            Сортировать по:
+        <div class="current-sort ml-2">
+            {{ current_sort|default:"Времени публикации (от новых к старым)" }}
+            {% if sort_types|length > 0 %}
+                <div class="dropdown">
+                    <ul>
+                        {% for id,sort_type in sort_types.items %}
+                            {% if sort_type != current_sort %}
+                                <li class="dropdown-item" id="{{ id }}"
+                                    onclick="window.location.href = `{% url 'news:news_list' %}?search={{ request.GET.search }}&sort={{ id }}`">
+                                    {{ sort_type }}
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        <!--
+                        <li class="dropdown-item">Времени публикации (от старых к новым)</li>
+                        <li class="dropdown-item">Алфавиту (а-я)</li>
+                        <li class="dropdown-item">Алфавиту (я-а)</li>
+                        <li class="dropdown-item">Времени последнего изменения (от новых к старым)</li>
+                        <li class="dropdown-item">Времени последнего изменения (от старых к новым)</li>-->
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+        </div>
+        <div class="float-right">
+            <form action="." method="get" class="search-form">
+                <input type="search" name="search" class="search"/>
+                <input type="submit" value="Найти" />
+            </form>
+        </div>
+    </div>
+    <div id="ajax-paginated" class="news-block w-100 flex-column">
+        {% include 'news/news_list_ajax.html' %}
+    </div>
+{% endblock %}
+
+{% block domready %}
+    let string = decodeURIComponent(getUrlAsDict()['search']);
+    $('.search').val(
+        string === undefined || string === 'undefined' ? '' : string.replaceAll('+', ' ')
+    );
+    ajaxPaginationInit();
+{% endblock %}

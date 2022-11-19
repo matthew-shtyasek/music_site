@@ -1,0 +1,21 @@
+{% extends 'root.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/music_list.css' %}">
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/url_handler.js' %}"></script>
+    <script src="{% static 'js/music_list.js' %}"></script>
+    <script src="{% static 'js/pagination_ajax.js' %}"></script>
+    <script>
+        $(document).ready += function () {
+            ajaxPaginationInit();
+        }
+    </script>
+{% endblock %}
+
+{% block content %}
+    {% include 'musics/music_list.html' %}
+{% endblock %}

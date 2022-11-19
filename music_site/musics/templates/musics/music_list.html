@@ -1,0 +1,145 @@
+{% load static %}
+
+<script>
+
+    let play = false;
+    let currentSong = 0;
+    let audio_elem;
+    let play_btn;
+    let pause_btn;
+    let next_btn;
+    let prev_btn;
+    let time;
+
+    $(document).ready(function () {
+
+        audio_elem = document.getElementById('audio');
+        play_btn = $('.play');
+        pause_btn = $('.pause');
+        next_btn = $('.next');
+        prev_btn = $('.prev');
+        time = $('.time');
+
+        play_btn.click(function () {
+            let song_id = getCurrentSongId();
+            let audio_id = `audio-${song_id}`;
+            if (audio_elem.id === audio_id) {
+                return playSong();
+            }
+            audio_elem.id = audio_id;
+            switchTrack(song_id);
+        });
+
+        pause_btn.click(function () {
+            stopSong();
+        });
+
+        prev_btn.click(function () {
+            playPrevSong();
+        });
+
+        next_btn.click(function () {
+            playNextSong();
+        });
+    });
+
+    function getCurrentSongId() {
+        let songId = $('.song .song-link')[currentSong].id.split('-');
+        return parseInt(songId[songId.length - 1]);
+    }
+
+    function playSongBySrc(src) {
+        if (play)
+            audio_elem.pause();
+        audio_elem.src = src;
+        audio_elem.currentTime = 0;
+        playSong();
+    }
+
+    function playSong() {
+        audio_elem.play();
+        play = true;
+
+        audioPlay = setInterval(function () {
+            let audioTime = Math.round(audio_elem.currentTime);
+            let audioLength = Math.round(audio_elem.duration)
+            time.width(`${(audioTime * 100) / audioLength}%`);
+            if (audioTime === audioLength)
+                playNextSong();
+        }, 10);
+    }
+
+    function stopSong() {
+        if (!play)
+            return false;
+        audio_elem.pause();
+        play = false;
+    }
+
+    function playNextSong() {
+        currentSong++;
+        try {
+            switchTrack(getCurrentSongId());
+        } catch {
+            currentSong--;
+        }
+    }
+
+    function playPrevSong() {
+        currentSong--;
+        try {
+            switchTrack(getCurrentSongId());
+        } catch {
+            currentSong++;
+        }
+    }
+
+    let request_run = false;
+    let temp_index = currentSong;
+
+    function switchTrack(pk) {
+        if (request_run) {
+            return false;
+        }
+        temp_index = currentSong;
+        request_run = true;
+
+        $.get({
+            url: `{% url 'musics:get_song_ajax' %}`,
+            data: {pk: pk},
+            success: function (data) {
+                playSongBySrc(data.song_url);
+                request_run = false;
+                currentSong = temp_index;
+            },
+        });
+    }
+</script>
+
+{% block extracss %}
+    <link rel="stylesheet" href="{% static 'css/music_list.css' %}">
+{% endblock %}
+
+{% block extrajs %}
+
+    <script src="{% static 'js/music_list.js' %}"></script>
+{% endblock %}
+
+<div class="player w-75" id="ajax-paginated">
+    {% include 'musics/music_list_wd.html' with song=song songs=songs %}
+</div>
+
+{% include 'dropdown/playlists_dropdown.html' %}
+
+<div class="interactive-player">
+    <audio id="audio" src="#" hidden></audio>
+    <div class="controls">
+        <div class="audio-track">
+            <div class="time"></div>
+        </div>
+        <button class="play">Play</button>
+        <button class="pause">Pause</button>
+        <button class="prev">&#60;prev</button>
+        <button class="next">next&#62;</button>
+    </div>
+</div>

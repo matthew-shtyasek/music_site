@@ -1,0 +1,15 @@
+{% extends 'root.html' %}
+{% load static %}
+
+{% block extracss %}
+    <link rel="stylesheet" href="{% static 'css/music_list.css' %}">
+{% endblock %}
+
+{% block title %}Плейлист «{{ playlist.name }}»{% endblock %}
+
+{% block content %}
+    <div class="d-flex flex-column w-100">
+        <h3 class="">Композиции:</h3>
+        {% include 'musics/music_list.html' with songs=playlist.songs.all off_add_button=True %}
+    </div>
+{% endblock %}

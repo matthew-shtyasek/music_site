@@ -1,0 +1,23 @@
+{% extends 'root.html' %}
+
+{% block title %}Выбор типа аккаунта{% endblock %}
+
+{% block content %}
+    <div class="d-flex flex-row w-100">
+        {% for premium in premiums %}
+            <div class="d-flex flex-column p-4 m-2" style="width: 300px; height: 380px; border: 2px gray solid; border-radius: 4px;">
+                <h4 class="d-flex w-100 text-center">{{ premium.name }}</h4>
+                <p>Тип: <a href="#">{{ premium.type.type }}</a></p>
+                <p>Описание: {{ premium.description|truncatechars:"350" }}</p>
+                <p>Кол-во месяцев: {{ premium.months }}</p>
+                {% if premium.discount %}
+                    <p>Скидка: {{ premium.discount }}</p>
+                {% endif %}
+                <p>Стоимость: {{ premium.get_result_price }}</p>
+                <div class="w-100 h-100 d-flex align-items-end">
+                    <a class="button btn btn-success w-100" href="{% url 'payments:pay' premium_pk=premium.pk %}">Приобрести</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

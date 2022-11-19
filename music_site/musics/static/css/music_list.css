@@ -1,0 +1,121 @@
+.song {
+  border: lightgrey 1px solid;
+  border-radius: 4px;
+  background-color: lightcyan;
+  padding: 10px 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+
+.song .song-detail a {
+  display: inline-block;
+  font-size: larger;
+  color: green;
+  margin-left: 1vh;
+}
+
+.song .song-detail a:hover {
+  color: black;
+  text-decoration: none;
+}
+
+
+.song .song-play audio {
+  border-radius: 0;
+}
+
+.song .song-play, .song .song-detail {
+  display: block;
+}
+
+
+.song .song-play svg {
+  width: 35pt;
+  height: 35pt;
+  margin-left: 1vh;
+  /*top: 50%; right: 50%;
+  transform: translate(50%,-50%);*/
+}
+
+.album-image {
+  border: lightgray 1px solid;
+  border-radius: 4px;
+  margin-left: 1vh;
+}
+
+/* This animates the circle when it switches to play */
+#circle {
+  transform:  scale(40%);
+
+  transition: stroke-dashoffset 300ms ease-in;
+  stroke-dashoffset: 0;
+  fill: none;
+}
+#circle.play {
+  stroke-dashoffset: 314;
+}
+
+#line1, #line2 {
+  transform:  scale(40%);
+
+}
+
+.add-song {
+  border: 1px lightgray solid;
+  border-radius: 3px;
+  padding: 10px 17px;
+  background-color: #f4ffff;
+  transition: 0.1s;
+}
+
+.add-song:hover {
+  background-color: lightgray;
+  border: 1px white solid;
+  transition: 0.3s;
+}
+
+.song-add-dropdown {
+  border: 2px lightgray solid;
+  border-radius: 4px;
+  z-index: 1;
+}
+
+.song-add-dropdown:hover {
+  cursor: default;
+}
+
+.song-add-dropdown .dropdown-content {
+  border-bottom: 1px lightgray solid;
+  border-right: 1px lightgray solid;
+  user-select: none;
+  background-color: #fefefe;
+}
+
+.song-add-dropdown .dropdown-content:hover {
+  cursor: pointer;
+}
+
+.interactive-player {
+  position: fixed;
+  bottom: 20px;
+  padding: 10px 40px;
+  background-color: #f4ffff;
+  border: gray solid 2px;
+  border-radius: 4px;
+}
+
+.audio-track {
+  border-radius: 4px;
+  width: 100%;
+  height: 5px;
+  background-color: #dddddd;
+  margin: 10px 0;
+}
+
+.time {
+  border-radius: 4px;
+  width: 0;
+  height: 5px;
+  background-color: #474747;
+}

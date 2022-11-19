@@ -1,0 +1,17 @@
+.dropdown-exit-button {
+    margin-top: 5px;
+    margin-right: 5px;
+    padding: 5px 10px;
+    border: 2px gray solid;
+    border-radius: 4px;
+    color: black;
+    font-size: large;
+    transition: 0.3s;
+}
+
+.dropdown-exit-button:hover {
+    text-decoration: none;
+    background-color: red;
+    color: white;
+    transition: 0.5s;
+}

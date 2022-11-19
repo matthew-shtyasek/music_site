@@ -1,0 +1,112 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="{% block meta_description %}{% endblock %}">
+    <title>{% block title %}{% endblock %}</title>
+
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="{% static 'js/cookie-js.js' %}"></script>
+    <script src="{% static 'js/url_handler.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            $('#rss-link').attr('href', `${getUrlDomain()}{% url 'musics:main' %}`)
+        });
+    </script>
+
+
+    <link rel="home" type="application/rss+xml" href="" id="rss-link" >
+
+    {% block css %}
+    {% endblock %}
+
+    {% block js %}
+    {% endblock %}
+
+    {% block extracss %}
+    {% endblock %}
+
+    {% block extrajs %}
+    {% endblock %}
+
+    <script>
+        window.CSRF_TOKEN = "{{ csrf_token }}";
+        $(document).ready(function () {
+            {% block domready %}
+            {% endblock %}
+        })
+    </script>
+</head>
+<body>
+    <div class="container">
+        {% if not render_without_header %}
+            <nav class="navbar navbar-expand-lg navbar-light border-bottom header mb-4">
+                <a class="ml-5 navbar-brand title" href="{% if user.is_staff %}jjj{% else %}#{% endif %}">
+                    <div class="p-1">
+                        <h1>Musify</h1>
+                    </div>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarText">
+                    <ul class="navbar-nav mr-auto mt-2">
+                        <li class="nav-item {% if current_page == 'news' %} active {% endif %}">
+                            <a class="nav-link h4 text" href="{% url 'news:news_list' %}">Новости</a>
+                        </li>
+                        <li class="nav-item {% if current_page == 'music' %} active {% endif %}">
+                            <a class="nav-link h4" href="{% url 'musics:main' %}">Музыка</a>
+                        </li>
+                        <li class="nav-item {% if current_page == 'updates' %} active {% endif %}">
+                            <a class="nav-link h4" href="#">Обновления</a>
+                        </li>
+                    </ul>
+                    <span class="navbar-text mt-2 mr-3">
+                        <ul class="navbar-nav">
+                            {% if user.is_authenticated %}
+                                <li class="nav-item {% if current_page == 'profile' %}active{% endif %}">
+                                    <a class="nav-link h5" href="{% url 'profiles:profile' user.pk %}" >{{ user.username|truncatechars:"22" }}</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link h5" href="{% url 'auth:logout' %}?next={{ request.path|urlencode }}">Выход</a>
+                                </li>
+                            {% else %}
+                                <li class="nav-item {% if current_page == 'login' %} active {% endif %}">
+                                    <a class="nav-login nav-link h5" href="{% url 'auth:login' %}">Вход</a>
+                                </li>
+                                <li class="nav-item {% if current_page == 'signin' %} active {% endif %}">
+                                    <a class="nav-link h5" href="{% url 'auth:signin' %}">Регистрация</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </span>
+                </div>
+            </nav>
+        {% endif %}
+
+        <div class="content flex-column d-flex justify-content-center align-items-center w-100">
+            {% if not render_without_header %}
+                <div class="messages w-100">
+                    {% include 'messages.html' %}
+                </div>
+            {% endif %}
+
+            {% block content %}
+            {% endblock %}
+        </div>
+
+        {% if not render_without_header %}
+            <div></div>
+        {% endif %}
+    </div>
+    <div style="height: 100px;">
+
+    </div>
+</body>
+</html>
